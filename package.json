@@ -1,0 +1,25 @@
+{
+  "name": "valoraian",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src\\index.js",
+  "dependencies": {
+    "ascii-table": "^0.0.9",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "node": "^17.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheTrueGravity/valorian-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheTrueGravity/valorian-bot/issues"
+  },
+  "homepage": "https://github.com/TheTrueGravity/valorian-bot#readme"
+}

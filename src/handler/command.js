@@ -1,18 +1,19 @@
-const {
-    readdirSync
-} = require("fs");
-const ascii = require("ascii-table");
-const table = new ascii().setHeading("Command", "Load status");
+const { readdirSync } = require("fs")
+const ascii = require("ascii-table")
+const table = new ascii().setHeading("Command", "Load status")
 
-module.exports = (client) => {
+module.exports = (client, commandsFolder) => {
     const categories = []
 
-    readdirSync("./commands/").forEach(dir => {
-        const commands = readdirSync(`./commands/${dir}/`).filter(f => f.endsWith(".js"))
+    readdirSync(commandsFolder).forEach(dir => {
+        const commands = readdirSync(`${commandsFolder}/${dir}`).filter(f => f.endsWith(".js"))
+
+        console.log(commands, commandsFolder)
         const temp = []
 
         for (let file of commands) {
-            let pull = require(`../commands/${dir}/${file.split('.')[0]}`)._
+            console.log()
+            let pull = require(`${commandsFolder}/${dir}/${file.split('.')[0]}`)
 
             if (file == '_category.js') {
                 categories.push(pull)
