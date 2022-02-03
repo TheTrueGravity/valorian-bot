@@ -6,9 +6,9 @@ const {
     Buffer
 } = require('./handler/buffer')
 
-const prefix = "!v"
-
 require('dotenv').config()
+
+const prefixes = process.env.PREFIXES.split(' ')
 
 const client = new Client({
     intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']
@@ -36,10 +36,15 @@ client.isMod = async function (message) {
     return (message.guild.ownerId == message.author.id || message.author.id == "487314847470714907")
 }
 
+console.log(prefixes)
+
 client.on('message', async message => {
     var hasPrefix = false;
+    var prefix = ''
 
-    if (message.content.startsWith(prefix)) hasPrefix = true
+    for (const _prefix of prefixes) { if (message.content.startsWith(_prefix)) { hasPrefix = true; prefix = _prefix } }
+
+    console.log(prefix, hasPrefix)
 
     if (message.author.bot) return
     if (!message.guild) return
@@ -47,6 +52,8 @@ client.on('message', async message => {
 
     const args = message.content.slice(prefix).trim().replace(prefix, '').split(/ +/g)
     const args1 = message.content.slice(prefix).trimStart().replace(prefix, '').replace(args[0], '').trimStart()
+
+    console.log(args)
 
     const cmd = args.shift().toLowerCase()
 

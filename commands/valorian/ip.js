@@ -6,8 +6,7 @@ module.exports = {
     description: "Sends the ip to valorian survival!",
     run: async (client, message, args) => {
         const embed = new MessageEmbed()
-            .setDescription(`Join the server @ valorian.net!`)
-            
+            .setDescription(`Join the server at valorian.net!`)
         await message.channel.send({ embeds: [embed] })
     }
 }
