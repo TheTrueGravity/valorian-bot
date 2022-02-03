@@ -44,16 +44,12 @@ client.on('message', async message => {
 
     for (const _prefix of prefixes) { if (message.content.startsWith(_prefix)) { hasPrefix = true; prefix = _prefix } }
 
-    console.log(prefix, hasPrefix)
-
     if (message.author.bot) return
     if (!message.guild) return
     if (!hasPrefix) return
 
     const args = message.content.slice(prefix).trim().replace(prefix, '').split(/ +/g)
     const args1 = message.content.slice(prefix).trimStart().replace(prefix, '').replace(args[0], '').trimStart()
-
-    console.log(args)
 
     const cmd = args.shift().toLowerCase()
 

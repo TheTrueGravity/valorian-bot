@@ -65,7 +65,6 @@ module.exports = {
     description: "Help command of the bot!",
     run: async (client, message, args) => {
         const categories = await getCategories(client)
-
         if (!args[0]) {
             var description = ''
 
@@ -92,7 +91,7 @@ module.exports = {
         } else {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
-                    if (category.name == args[0].toLowerCase()) {
+                    if (category.name.toLowerCase() == args[0].toLowerCase()) {
                         if (category.mod && !(await client.isMod(message))) {
                             const embed = new MessageEmbed({
                                 title: 'Help',
@@ -138,11 +137,27 @@ module.exports = {
                 for (var category of categories) {
                     const commands = await getCommands(client, category.name)
 
-                    if (commands.map(x => x.name).find(e => e == args[0].toLowerCase())) {
-                        const command = await getCommand(client, commands.find(e => e.name == args[0].toLowerCase()).name)
+                    console.log(commands)
 
-                        if (command.requiredPerms == 'mod')
-                            if (!client.isMod(message)) return
+                    if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
+                        const command = await getCommand(client, commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
+
+                        console.log(command)
+
+                        if (category.mod && !(await client.isMod(message))) {
+                            const embed = new MessageEmbed({
+                                title: 'Help',
+                                description: 'You do not have the required permissions!',
+                                author: {
+                                    name: message.author.username,
+                                    iconURL: message.author.avatarURL()
+                                }
+                            })
+                            
+                            return await message.channel.send({
+                                embeds: [embed]
+                            })
+                        }
 
                         var description =
                             `**Name:** ${(await command).name}
@@ -162,7 +177,7 @@ module.exports = {
                             }
                         })
 
-                        await message.channel.send({
+                        return await message.channel.send({
                             embeds: [embed]
                         })
                     }
