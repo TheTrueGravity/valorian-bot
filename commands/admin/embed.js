@@ -1,11 +1,5 @@
 const { MessageEmbed } = require('discord.js')
 
-const string = (input) => {
-    const out = ''
-    out += input
-    return out
-}
-
 module.exports = {
     name: "embed",
     category: "utils",
