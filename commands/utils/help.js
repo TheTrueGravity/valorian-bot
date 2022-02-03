@@ -1,11 +1,12 @@
-const { MessageEmbed } = require('discord.js')
+const {
+    MessageEmbed
+} = require('discord.js')
 
-async function getCategories (client) {
+async function getCategories(client) {
     const categories = client.categories.get('categories')
     const out = []
 
     for (var category of categories) {
-        console.log(category)
         out.push({
             name: category.name,
             description: category.description,
@@ -16,11 +17,11 @@ async function getCategories (client) {
     return out
 }
 
-async function getCommands (client, categoryName) {
+async function getCommands(client, categoryName) {
     const commands = client.categories.get(categoryName)
-    
+
     const out = []
-    
+
     for (var command of commands) {
         const push = {
             name: command.name,
@@ -31,14 +32,14 @@ async function getCommands (client, categoryName) {
         if (command.aliases) {
             push['aliases'] = command.aliases
         }
-        
+
         out.push(push)
     }
-    
+
     return out
 }
 
-async function getCommand (client, commandName) {
+async function getCommand(client, commandName) {
     const command = client.commands.get(commandName)
 
     const out = {
@@ -65,14 +66,17 @@ module.exports = {
     run: async (client, message, args) => {
         const categories = await getCategories(client)
 
-        console.log(args)
-
         if (!args[0]) {
-            console.log(categories)
             var description = ''
-            
-            for (var category of categories) { description += `${category.name} - ${category.description}\n\n` }
-            
+
+            for (var category of categories) {
+                if (category.mod && await client.isMod(message)) {
+                    description += `${category.name} - ${category.description}\n\n`
+                } else if (!category.mod) {
+                    description += `${category.name} - ${category.description}\n\n`
+                } else { description = 'Test' }
+            }
+
             const embed = new MessageEmbed({
                 title: 'Help',
                 description: description,
@@ -82,38 +86,38 @@ module.exports = {
                 }
             })
 
-            console.log(description)
-
-            await message.channel.send({ embeds: [embed] })
+            await message.channel.send({
+                embeds: [embed]
+            })
         } else {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
                     if (category.name == args[0].toLowerCase()) {
+                        if (category.mod && !(await client.isMod(message))) {
+                            const embed = new MessageEmbed({
+                                title: 'Help',
+                                description: 'You do not have the required permissions!',
+                                author: {
+                                    name: message.author.username,
+                                    iconURL: message.author.avatarURL()
+                                }
+                            })
+                            
+                            return await message.channel.send({
+                                embeds: [embed]
+                            })
+                        }
+                        
                         var description = ''
                         const commands = await getCommands(client, category.name)
 
                         for (var command of commands) {
-                            if (command.requiredPerms == 'mod') {
-                                if (client.isMod(message)) {
-                                    description += 
-                                    `**Name:** ${command.name}
-                                    **Description**: ${command.description}
-                                    **Category**: ${command.category}`
-                                    if (command.aliases) {
-                                        description += `\n**Aliases** - ${command.aliases.join(', ').substr(0, command.aliases.join(', ').length)}`
-                                    }
-                                    description += '\n\n'
-                                }
-                            } else {
-                                description += 
-                                    `**Name:** ${command.name}
-                                    **Description**: ${command.description}
-                                    **Category**: ${command.category}`
-                                    if (command.aliases) {
-                                        description += `\n**Aliases** - ${command.aliases.join(', ').substr(0, command.aliases.join(', ').length)}`
-                                    }
-                                    description += '\n\n'
+                            description +=
+                                `**Name:** ${command.name}\n**Description**: ${command.description}\n**Category**: ${command.category}`
+                            if (command.aliases) {
+                                description += `\n**Aliases** - ${command.aliases.join(', ').substr(0, command.aliases.join(', ').length)}`
                             }
+                            description += '\n\n'
                         }
 
                         const embed = new MessageEmbed({
@@ -124,8 +128,10 @@ module.exports = {
                                 iconURL: message.author.avatarURL()
                             }
                         })
-                    
-                        await message.channel.send({ embeds: [embed] })
+
+                        await message.channel.send({
+                            embeds: [embed]
+                        })
                     }
                 }
             } else {
@@ -135,17 +141,18 @@ module.exports = {
                     if (commands.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                         const command = await getCommand(client, commands.find(e => e.name == args[0].toLowerCase()).name)
 
-                        if (command.requiredPerms == 'mod') if (!client.isMod(message)) return
+                        if (command.requiredPerms == 'mod')
+                            if (!client.isMod(message)) return
 
                         var description =
-                        `**Name:** ${(await command).name}
+                            `**Name:** ${(await command).name}
                         **Description**: ${command.description}
                         **Category**: ${command.category}`
                         if (command.aliases) {
                             description += `\n**Aliases** - ${command.aliases}`
                         }
                         description += '\n\n'
-    
+
                         const embed = new MessageEmbed({
                             title: 'Help',
                             description: description,
@@ -154,10 +161,12 @@ module.exports = {
                                 iconURL: message.author.avatarURL()
                             }
                         })
-                    
-                        await message.channel.send({ embeds: [embed] })
+
+                        await message.channel.send({
+                            embeds: [embed]
+                        })
                     }
-                    
+
                 }
             }
         }

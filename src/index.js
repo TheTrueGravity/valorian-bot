@@ -1,7 +1,12 @@
-const { Client, Collection } = require('discord.js')
-const { Buffer } = require('./handler/buffer')
+const {
+    Client,
+    Collection
+} = require('discord.js')
+const {
+    Buffer
+} = require('./handler/buffer')
 
-const prefix = "v!"
+const prefix = "!v"
 
 require('dotenv').config()
 
@@ -26,6 +31,10 @@ client.on("ready", async () => {
         name: 'VALORIAN SURVIVAL'
     })
 })
+
+client.isMod = async function (message) {
+    return (message.guild.ownerId == message.author.id || message.author.id == "487314847470714907")
+}
 
 client.on('message', async message => {
     var hasPrefix = false;
