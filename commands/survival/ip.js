@@ -2,8 +2,9 @@ const { MessageEmbed } = require('discord.js')
 
 module.exports = {
     name: "ip",
-    category: "valorian",
+    category: "survival",
     description: "Sends the ip to valorian survival!",
+    args: "",
     run: async (client, message, args) => {
         const embed = new MessageEmbed()
             .setDescription(`Join the server at valorian.net!`)

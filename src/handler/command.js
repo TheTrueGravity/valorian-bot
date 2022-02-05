@@ -25,8 +25,7 @@ module.exports = (client, commandsFolder) => {
                 name: pull.name,
                 aliases: pull.aliases,
                 category: pull.category,
-                description: pull.description,
-                requiredPerms: pull.requiredPerms
+                description: pull.description
             }
 
             if (pull.name) {

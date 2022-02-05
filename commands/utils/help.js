@@ -63,6 +63,7 @@ module.exports = {
     name: "help",
     category: "utils",
     description: "Help command of the bot!",
+    args: ["", "{Category name}", "{Command name}"],
     run: async (client, message, args) => {
         const categories = await getCategories(client)
         if (!args[0]) {
@@ -73,7 +74,7 @@ module.exports = {
                     description += `${category.name} - ${category.description}\n\n`
                 } else if (!category.mod) {
                     description += `${category.name} - ${category.description}\n\n`
-                } else { description = 'Test' }
+                }
             }
 
             const embed = new MessageEmbed({
@@ -160,9 +161,7 @@ module.exports = {
                         }
 
                         var description =
-                            `**Name:** ${(await command).name}
-                        **Description**: ${command.description}
-                        **Category**: ${command.category}`
+                            `**Name:** ${(await command).name}\n**Description**: ${command.description}\n**Category**: ${command.category}`
                         if (command.aliases) {
                             description += `\n**Aliases** - ${command.aliases}`
                         }

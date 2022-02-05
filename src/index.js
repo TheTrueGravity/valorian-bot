@@ -42,7 +42,12 @@ client.on('message', async message => {
     var hasPrefix = false;
     var prefix = ''
 
-    for (const _prefix of prefixes) { if (message.content.startsWith(_prefix)) { hasPrefix = true; prefix = _prefix } }
+    for (const _prefix of prefixes) {
+        if (message.content.startsWith(_prefix)) {
+            hasPrefix = true;
+            prefix = _prefix
+        }
+    }
 
     if (message.author.bot) return
     if (!message.guild) return
@@ -54,6 +59,14 @@ client.on('message', async message => {
     const cmd = args.shift().toLowerCase()
 
     var command = client.commands.get(cmd)
+
+    for (var category of client.categories.get("categories")) {
+        if (category.name == command.category) {
+            if (category.mod) {
+                if (!await client.isMod(message)) return
+            }
+        }
+    }
 
     if (!command) {
         command = client.commands.get(client.aliases.get(cmd))

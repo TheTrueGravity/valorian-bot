@@ -1,17 +1,17 @@
-const { Client, Message } = require('discord.js')
+const { MessageEmbed, Client, Message } = require('discord.js')
 
 module.exports = {
     // Name of the command
-    name: "command",
+    name: "trello",
 
     // Category command is in
-    category: "category",
+    category: "bot",
 
     // The commands description
-    description: "description",
+    description: "Get a link to the Valorian bots trello board!",
 
     // The commands args
-    args: "command args",
+    args: "trello",
 
     /**
      * Code to run when command is called
@@ -23,6 +23,8 @@ module.exports = {
      * 
     **/
     run: async (client, message, args, args1) => {
-        // Run code here
+        const embed = new MessageEmbed()
+            .setDescription(`Track the bots progress at https://trello.com/b/NpJeJGYU/valorian-bot!`)
+        await message.channel.send({ embeds: [embed] })
     }
 }

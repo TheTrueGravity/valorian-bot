@@ -2,8 +2,9 @@ const { MessageEmbed } = require('discord.js')
 
 module.exports = {
     name: "embed",
-    category: "utils",
+    category: "admin",
     description: "Sends an embed in a desired channel! This can be either text or as a json format! Check https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object for an example!",
+    args: ["{channel name or id} {text or json formatting}"],
     run: async (client, message, args, args1) => {
         let channelId = 0
         if (args[0].startsWith('<#')) { channelId = args[0].substring(2, args[0].length - 1) }
@@ -16,7 +17,6 @@ module.exports = {
         try {
             if (JSON.parse(msg)) {
                 const _msg = JSON.parse(msg)
-                console.log(_msg)
                 try {
                     embed = new MessageEmbed({
                         author: _msg.author,
@@ -33,6 +33,7 @@ module.exports = {
                         video: _msg.video
                     })
                 } catch (error) {
+                    console.log(error)
                     return message.reply("Invalid JSON formatting, please check out https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object an example!")
                 }
             }

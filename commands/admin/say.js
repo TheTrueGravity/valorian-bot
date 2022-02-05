@@ -2,8 +2,9 @@ const { MessageEmbed } = require('discord.js')
 
 module.exports = {
     name: "say",
-    category: "utils",
+    category: "admin",
     description: "Sends a specified message in a channel!",
+    args: ["{channel name or id} {message}"],
     run: async (client, message, args, args1) => {
         let channelId = 0
         if (args[0].startsWith('<#')) { channelId = args[0].substring(2, args[0].length - 1) }
