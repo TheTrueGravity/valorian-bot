@@ -7,12 +7,9 @@ module.exports = (client, commandsFolder) => {
 
     readdirSync(commandsFolder).forEach(dir => {
         const commands = readdirSync(`${commandsFolder}/${dir}`).filter(f => f.endsWith(".js"))
-
-        console.log(commands, commandsFolder)
         const temp = []
 
         for (let file of commands) {
-            console.log()
             let pull = require(`${commandsFolder}/${dir}/${file.split('.')[0]}`)
 
             if (file == '_category.js') {
@@ -20,7 +17,6 @@ module.exports = (client, commandsFolder) => {
                 break
             }
 
-            
             temp[temp.length] = {
                 name: pull.name,
                 aliases: pull.aliases,

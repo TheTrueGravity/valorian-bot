@@ -1,4 +1,4 @@
 module.exports = {
     name: 'survival',
-    description: 'The valorian category!'
+    description: 'The valorian survival category!'
 }

@@ -1,16 +1,20 @@
 {
-  "name": "vloraian",
+  "name": "valorian",
   "version": "1.0.0",
   "description": "",
   "main": "src\\index.js",
   "dependencies": {
+    "argparse": "^2.0.1",
     "ascii-table": "^0.0.9",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "node": "^17.4.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node src\\index.js --development",
+    "beta": "node src\\index.js --beta",
+    "start": "node src\\index.js",
+    "deploy": "git add * & git commit -m \"main\" & git push -u origin main"
   },
   "repository": {
     "type": "git",

@@ -5,14 +5,37 @@ const {
 const {
     Buffer
 } = require('./handler/buffer')
+const {
+    argParse
+} = require('./handler/args')
 
 require('dotenv').config()
 
+const arguments = argParse("", [{
+        name: '--development',
+        alias: '-dev',
+        options: {
+            action: 'store_true',
+            help: 'Enable development mode'
+        }
+    },
+    {
+        name: '--beta',
+        alias: '-b',
+        options: {
+            action: 'store_true',
+            help: 'Enable beta mode'
+        }
+    }
+])
+
+const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
 
 const client = new Client({
-    intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']
+    intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
 })
+
 client.commands = new Collection()
 client.aliases = new Collection()
 client.categories = new Collection()
@@ -28,15 +51,38 @@ client.on("ready", async () => {
     console.log('-------------------------------------------')
     await client.user.setActivity('The official valorian discord bot!', {
         type: 'PLAYING',
-        name: 'VALORIAN SURVIVAL'
+        name: 'VALORIAN SURVIVAL',
+        url: 'https://www.twitch.tv/springfulofficial'
     })
+})
+
+client.on("error", (e) => {
+    console.log(e.name, e.message)
+    return
 })
 
 client.isMod = async function (message) {
     return (message.guild.ownerId == message.author.id || message.author.id == "487314847470714907")
 }
 
-console.log(prefixes)
+client.getVersion = async function () {
+    const {
+        version
+    } = require('../package.json')
+    return version
+}
+client.getDeployment = async function () {
+    var deployment = "production"
+    if (arguments.development) {
+        deployment = "development"
+    } else if (arguments.beta) {
+        deployment = "beta"
+    }
+    return deployment
+}
+client.getPrefixes = async function () {
+    return prefixes
+}
 
 client.on('message', async message => {
     var hasPrefix = false;
@@ -58,14 +104,10 @@ client.on('message', async message => {
 
     const cmd = args.shift().toLowerCase()
 
-    var command = client.commands.get(cmd)
-
-    for (var category of client.categories.get("categories")) {
-        if (category.name == command.category) {
-            if (category.mod) {
-                if (!await client.isMod(message)) return
-            }
-        }
+    try {
+        var command = client.commands.get(cmd)
+    } catch {
+        return message.reply("Invalid command!")
     }
 
     if (!command) {
@@ -73,8 +115,24 @@ client.on('message', async message => {
     }
 
     if (command) {
+        if (arguments.development) {
+            if (testers.includes(message.author.id)) {
+                command.run(message, args, args1)
+            }
+            if (command.name != "deployment") return
+        } else {
+            for (var category of client.categories.get("categories")) {
+                if (category.name == command.category) {
+                    if (category.mod) {
+                        if (!await client.isMod(message)) return
+                    } else if (category.development) {
+                        if (!arguments.development) return
+                    }
+                }
+            }
+        }
         command.run(client, message, args, args1)
-    }
+    } else return
 })
 
 client.login(process.env.TOKEN)

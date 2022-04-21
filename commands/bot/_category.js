@@ -1,4 +1,4 @@
 module.exports = {
     name: 'bot',
-    description: 'The admin category!'
+    description: 'The bot category!'
 }
