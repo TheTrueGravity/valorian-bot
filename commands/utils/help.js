@@ -76,7 +76,7 @@ module.exports = {
             var description = ''
 
             for (var category of categories) {
-                console.log(category)
+                console.log(category, client.arguments)
                 if (category.mod) {
                     if(!await client.isMod(message)) continue
                     description += `${category.name} - ${category.description}\n\n`
