@@ -1,4 +1,5 @@
 const { MessageEmbed, Client, Message } = require('discord.js')
+const { reply, createAuthorEmbed } = require('../../src/handler/embeds')
 
 module.exports = {
     // Name of the command
@@ -11,7 +12,7 @@ module.exports = {
     description: "Get a link to the Valorian bots trello board!",
 
     // The commands args
-    args: "trello",
+    args: "",
 
     /**
      * Code to run when command is called
@@ -23,8 +24,7 @@ module.exports = {
      * 
     **/
     run: async (client, message, args, args1) => {
-        const embed = new MessageEmbed()
-            .setDescription(`Track the bots progress at https://trello.com/b/NpJeJGYU/valorian-bot!`)
-        await message.channel.send({ embeds: [embed] })
+        console.log(message.author)
+        await reply(message, await createAuthorEmbed("Track the bots progress at https://trello.com/b/NpJeJGYU/valorian-bot!", process.env.MAIN_EMBED_COLOUR, message.author))
     }
 }

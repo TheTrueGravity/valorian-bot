@@ -8,7 +8,9 @@
     "ascii-table": "^0.0.9",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
-    "node": "^17.4.0"
+    "mime-db": "^1.52.0",
+    "node": "^17.4.0",
+    "util": "^0.12.4"
   },
   "scripts": {
     "test": "node src\\index.js --development",

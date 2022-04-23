@@ -1,4 +1,5 @@
 const { MessageEmbed, Client, Message } = require('discord.js')
+const { reply, createAuthorEmbed } = require('../../src/handler/embeds')
 
 module.exports = {
     // Name of the command
@@ -23,14 +24,6 @@ module.exports = {
      * 
     **/
     run: async (client, message, args, args1) => {
-        const embed = new MessageEmbed({
-            title: "The bots deployment version",
-            description: await client.getDeployment(),
-            author: {
-                name: message.author.username,
-                iconURL: message.author.avatarURL()
-            }
-        })
-        await message.channel.send({ embeds: [embed] })
+        await reply(message, await createAuthorEmbed(`Deployment version: ${await client.getDeployment()}`, process.env.MAIN_EMBED_COLOUR, message.author))
     }
 }

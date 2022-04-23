@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js')
+const { reply, createAuthorEmbed } = require("../../src/handler/embeds")
 
 module.exports = {
     name: "ip",
@@ -6,8 +6,6 @@ module.exports = {
     description: "Sends the ip to valorian survival!",
     args: "",
     run: async (client, message, args) => {
-        const embed = new MessageEmbed()
-            .setDescription(`Join the server at valorian.net!`)
-        await message.channel.send({ embeds: [embed] })
+        await reply(message, await createAuthorEmbed("The Valorian Survival IP is valorian.net!", process.env.MAIN_EMBED_COLOUR, message.author))
     }
 }

@@ -3,9 +3,6 @@ const {
     Collection
 } = require('discord.js')
 const {
-    Buffer
-} = require('./handler/buffer')
-const {
     argParse
 } = require('./handler/args')
 
@@ -116,10 +113,7 @@ client.on('message', async message => {
 
     if (command) {
         if (arguments.development) {
-            if (testers.includes(message.author.id)) {
-                command.run(message, args, args1)
-            }
-            if (command.name != "deployment") return
+            if (!(testers.includes(message.author.id)) && command.name != "deployment") return
         } else {
             for (var category of client.categories.get("categories")) {
                 if (category.name == command.category) {

@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js')
 
 module.exports = {
-    name: "addMessage",
+    name: "addmessage",
     category: "roles",
     description: "Sets the channel for the reaction list!",
     args: "{Channel name or id} {Title} {Colour}",

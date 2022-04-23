@@ -1,6 +1,7 @@
 const {
     MessageEmbed
 } = require('discord.js')
+const { reply, createErrorEmbed, createAuthorEmbed, createTitleEmbed } = require('../../src/handler/embeds')
 
 async function getCategories(client) {
     const categories = client.categories.get('categories')
@@ -77,35 +78,13 @@ module.exports = {
                 }
             }
 
-            const embed = new MessageEmbed({
-                title: 'Help',
-                description: description,
-                author: {
-                    name: message.author.username,
-                    iconURL: message.author.avatarURL()
-                }
-            })
-
-            await message.channel.send({
-                embeds: [embed]
-            })
+            await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
         } else {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
                     if (category.name.toLowerCase() == args[0].toLowerCase()) {
                         if (category.mod && !(await client.isMod(message))) {
-                            const embed = new MessageEmbed({
-                                title: 'Help',
-                                description: 'You do not have the required permissions!',
-                                author: {
-                                    name: message.author.username,
-                                    iconURL: message.author.avatarURL()
-                                }
-                            })
-                            
-                            return await message.channel.send({
-                                embeds: [embed]
-                            })
+                            return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
                         
                         var description = ''
@@ -120,44 +99,18 @@ module.exports = {
                             description += '\n\n'
                         }
 
-                        const embed = new MessageEmbed({
-                            title: 'Help',
-                            description: description,
-                            author: {
-                                name: message.author.username,
-                                iconURL: message.author.avatarURL()
-                            }
-                        })
-
-                        await message.channel.send({
-                            embeds: [embed]
-                        })
+                        await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
                     }
                 }
             } else {
                 for (var category of categories) {
                     const commands = await getCommands(client, category.name)
 
-                    console.log(commands)
-
                     if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
                         const command = await getCommand(client, commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
 
-                        console.log(command)
-
-                        if (category.mod && !(await client.isMod(message))) {
-                            const embed = new MessageEmbed({
-                                title: 'Help',
-                                description: 'You do not have the required permissions!',
-                                author: {
-                                    name: message.author.username,
-                                    iconURL: message.author.avatarURL()
-                                }
-                            })
-                            
-                            return await message.channel.send({
-                                embeds: [embed]
-                            })
+                        if (category.mod && !(await client.isMod(message))) {                            
+                            return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
 
                         var description =
@@ -167,18 +120,7 @@ module.exports = {
                         }
                         description += '\n\n'
 
-                        const embed = new MessageEmbed({
-                            title: 'Help',
-                            description: description,
-                            author: {
-                                name: message.author.username,
-                                iconURL: message.author.avatarURL()
-                            }
-                        })
-
-                        return await message.channel.send({
-                            embeds: [embed]
-                        })
+                        await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
                     }
 
                 }
