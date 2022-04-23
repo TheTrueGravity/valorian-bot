@@ -16,18 +16,8 @@ module.exports = {
             var description = ''
 
             for (var category of categories) {
-                if (category.mod) {
-                    if(!await client.isMod(message)) continue
-                    description += `${category.name} - ${category.description}\n\n`
-                    continue
-                }
-                console.log(category)
-                if (category.development) {
-                    console.log(category, client.arguments.development)
-                    if(!client.arguments.development) continue
-                    description += `${category.name} - ${category.description}\n\n`
-                    continue
-                }
+                if (category.mod) { if(!await client.isMod(message)) continue }
+                if (category.development) { if(!client.arguments.development) continue }
                 description += `${category.name} - ${category.description}\n\n`
             }
 
