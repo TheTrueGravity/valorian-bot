@@ -113,14 +113,13 @@ client.on('message', async message => {
 
     if (command) {
         if (arguments.development) {
-            console.log(!(testers.includes(message.author.id)), command.name != "deployment")
             if (!(testers.includes(message.author.id)) && command.name != "deployment") return
         } else {
             for (var category of client.categories.get("categories")) {
                 if (category.name == command.category) {
                     if (category.mod) {
                         if (!await client.isMod(message)) return
-                    } else if (category.development) {
+                    } else if (command.development) {
                         if (!arguments.development) return
                     }
                 }
