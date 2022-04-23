@@ -1,4 +1,4 @@
-const { reply } = require("../../src/handler/embeds")
+const { reply, createAuthorEmbed } = require("../../src/handler/embeds")
 
 module.exports = {
     name: "ping",
