@@ -1,69 +1,9 @@
 const {
-    MessageEmbed
-} = require('discord.js')
-const {
     reply,
     createErrorEmbed,
     createAuthorEmbed,
     createTitleEmbed
 } = require('../../src/handler/embeds')
-
-async function getCategories(client) {
-    const categories = client.categories.get('categories')
-    const out = []
-
-    for (var category of categories) {
-        out.push({
-            name: category.name,
-            description: category.description,
-            mod: category.mod
-        })
-    }
-
-    return out
-}
-
-async function getCommands(client, categoryName) {
-    const commands = client.categories.get(categoryName)
-
-    const out = []
-
-    for (var command of commands) {
-        const push = {
-            name: command.name,
-            category: command.category,
-            description: command.description,
-            requiredPerms: command.requiredPerms
-        }
-        if (command.aliases) {
-            push['aliases'] = command.aliases
-        }
-
-        out.push(push)
-    }
-
-    return out
-}
-
-async function getCommand(client, commandName) {
-    const command = client.commands.get(commandName)
-
-    const out = {
-        name: command.name,
-        category: command.category,
-        description: command.description,
-        requiredPerms: command.requiredPerms
-    }
-    if (command.aliases) {
-        var aliases = ''
-        for (var alias of command.aliases) {
-            aliases += alias + ', '
-        }
-        out['aliases'] = aliases.slice(0, aliases.length - 2)
-    }
-
-    return out
-}
 
 module.exports = {
     name: "help",
@@ -71,7 +11,7 @@ module.exports = {
     description: "Help command of the bot!",
     args: ["", "{Category name}", "{Command name}"],
     run: async (client, message, args) => {
-        const categories = await getCategories(client)
+        const categories = client.categories.get('categories')
         if (!args[0]) {
             var description = ''
 
@@ -98,7 +38,7 @@ module.exports = {
                         }
 
                         var description = ''
-                        const commands = await getCommands(client, category.name)
+                        const commands = client.categories.get(category.name)
 
                         for (var command of commands) {
                             if (command.development) if(!client.arguments.development) continue
@@ -118,7 +58,7 @@ module.exports = {
                     const commands = await getCommands(client, category.name)
 
                     if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
-                        const command = await getCommand(client, commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
+                        const command = await client.commands.get(commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
 
                         if (command.development) if(!client.arguments.development) {
                             return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
