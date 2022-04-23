@@ -13,10 +13,11 @@
     "util": "^0.12.4"
   },
   "scripts": {
-    "test": "node src\\index.js --development",
-    "beta": "node src\\index.js --beta",
-    "start": "node src\\index.js",
-    "deploy": "git add * & git commit -m \"main\" & git push -u origin main"
+    "build": "tsc",
+    "test": "npm build && node src\\index.js --development",
+    "beta": "npm build && node src\\index.js --beta",
+    "start": "npm build && node src\\index.js",
+    "deploy": "npm build && git add * & git commit -m \"main\" & git push -u origin main"
   },
   "repository": {
     "type": "git",
