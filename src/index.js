@@ -135,7 +135,7 @@ client.on('message', async message => {
         try {
             const run = await command.run(client, message, args, args1)
             if (run instanceof Error) {
-                return message.reply("There was an error running this command!")
+                return await reply(message, await createErrorEmbed(message, `There was an error running the command: ${command.name}`))
             }
         } catch {
             return await reply(message, await createErrorEmbed(message, `There was an error running the command: ${command.name}`))
