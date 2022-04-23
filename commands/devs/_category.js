@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'tests',
+    name: 'devs',
     description: 'The bot testing category!',
     devOnly: true
 }

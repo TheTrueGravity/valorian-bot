@@ -4,7 +4,7 @@ const {
 
 module.exports = {
     name: "throwerror",
-    category: "tests",
+    category: "devs",
     description: "Throws a controlled error!",
     args: "",
     devOnly: true,
