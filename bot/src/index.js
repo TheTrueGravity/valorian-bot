@@ -51,16 +51,14 @@ console.log(commands.toString())
 
 client.on("ready", async () => {
     logger.info(`Logged in as ${client.user.tag}!`)
+    logger.info(`Client id: ${client.user.id}`)
     logger.info(`Deployment: ${await client.getDeployment()}`)
     logger.info(`Version: ${await client.getVersion()}`)
-    
+    logger.info('-------------------------------------------')
+
     client.user.setActivity(`${prefixes[0]}help`, {
         type: 'LISTENING'
     })
-    console.log()
-    console.log('Logged in as:      ', client.user.username)
-    console.log('Client ID:         ', client.user.id)
-    console.log('-------------------------------------------')
 })
 
 client.on("error", (e) => {
