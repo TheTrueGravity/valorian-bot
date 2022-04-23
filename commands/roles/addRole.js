@@ -1,7 +1,7 @@
 const {
     read,
     write
-} = require('../../src/json')
+} = require('../../src/handler/json')
 const parseRole = require('../../src/handler/parseRole')
 const {
     reply,
