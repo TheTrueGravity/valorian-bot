@@ -31,7 +31,6 @@ module.exports = {
      * 
      **/
     run: async (client, message, args, args1) => {
-        console.log(message.author)
         await reply(message, await createAuthorEmbed("Track the bots progress at https://trello.com/b/NpJeJGYU/valorian-bot!", process.env.MAIN_EMBED_COLOUR, message.author))
     }
 }

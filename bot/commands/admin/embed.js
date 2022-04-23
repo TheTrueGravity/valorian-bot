@@ -38,7 +38,7 @@ module.exports = {
                         video: _msg.video
                     })
                 } catch (error) {
-                    console.log(error)
+                    client.logger.error(error)
                     return message.reply("Invalid JSON formatting, please check out https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object an example!")
                 }
             }

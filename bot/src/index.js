@@ -47,7 +47,7 @@ client.categories = new Collection()
 
 commands = require('./handler/command')(client, process.env.COMMANDS_FOLDER)
 
-console.log(commands.toString())
+logger.verbose(commands.toString())
 
 client.on("ready", async () => {
     logger.info('-------------------------------------------')
@@ -62,9 +62,8 @@ client.on("ready", async () => {
     })
 })
 
-client.on("error", (e) => {
-    console.log(e.name, e.message)
-    return
+client.on("error", (err) => {
+    return logger.error(err)
 })
 
 client.isMod = async function (message) {
@@ -143,11 +142,11 @@ client.on('message', async message => {
                 return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
             }
         } catch (error) {
-            console.error(error)
+            logger.error(error)
             return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
         }
 
-        console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
+        logger.verbose(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
     } else return
 })
 
