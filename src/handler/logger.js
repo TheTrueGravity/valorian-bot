@@ -15,7 +15,7 @@ class Logger {
                 encoding: 'utf8'
             });
         }
-        this.verbose('Logger initialized');
+        this.info('Logger initialized');
     }
     writeFile(file, message) {
         var fileData = fs_1.readFileSync(file, {
@@ -33,11 +33,6 @@ class Logger {
         fs_1.writeFileSync(file, fileData, {
             encoding: 'utf8'
         });
-    }
-    log(message) {
-        const msg = '[LOG] ' + message;
-        console.log(msg);
-        this.writeFile(this.logFile, msg);
     }
     error(message) {
         const msg = '[ERROR] ' + message;
