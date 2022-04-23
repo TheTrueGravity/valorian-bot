@@ -127,7 +127,7 @@ client.on('message', async message => {
         }
         console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) ran command: ${command.name}`)
         
-        const run = command.run(client, message, args, args1)
+        const run = await command.run(client, message, args, args1)
 
         console.log(run)
 
