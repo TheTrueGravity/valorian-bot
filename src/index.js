@@ -122,8 +122,6 @@ client.on('message', async message => {
             }
         }
 
-        console.log(command)
-
         if (command.development) {
             if (!arguments.development) return
         }
