@@ -21,6 +21,7 @@ module.exports = {
                     description += `${category.name} - ${category.description}\n\n`
                     continue
                 }
+                console.log(category)
                 if (category.development) {
                     console.log(category, client.arguments.development)
                     if(!client.arguments.development) continue
