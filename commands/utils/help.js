@@ -20,6 +20,7 @@ module.exports = {
                     if(!await client.isMod(message)) continue
                     description += `${category.name} - ${category.description}\n\n`
                 } else if (category.development) {
+                    console.log(category.development)
                     if(!client.arguments.development) continue
                     description += `${category.name} - ${category.description}\n\n`
                 } else {
@@ -32,11 +33,11 @@ module.exports = {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
                     if (category.name.toLowerCase() == args[0].toLowerCase()) {
-                        if (category.development) if(!client.arguments.development) {
-                            return await reply(message, await createErrorEmbed('That category is currently under development!', message.author))
-                        } else if (category.mod && !(await client.isMod(message))) {
+                        if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
-                        }
+                        } else if (category.development) if(!client.arguments.development) {
+                            return await reply(message, await createErrorEmbed('That category is currently under development!', message.author))
+                        } 
 
                         var description = ''
                         const commands = client.categories.get(category.name)
@@ -60,10 +61,10 @@ module.exports = {
                     if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
                         const command = await client.commands.get(commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
 
-                        if (command.development) if(!client.arguments.development) {
-                            return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
-                        } else if (category.mod && !(await client.isMod(message))) {
+                        if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
+                        } else if (command.development) if(!client.arguments.development) {
+                            return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
                         }
 
                         var description =
