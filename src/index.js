@@ -131,7 +131,14 @@ client.on('message', async message => {
             if (!testers.includes(message.author.id)) return
         }
 
-        const run = await command.run(client, message, args, args1)
+        try {
+            const run = await command.run(client, message, args, args1)
+            if (run instanceof Error) {
+                return message.reply("There was an error running this command!")
+            }
+        } catch {
+            return message.reply("There was an error running this command!")
+        }
 
         if (run instanceof Error) {
             return message.reply("There was an error running this command!")
