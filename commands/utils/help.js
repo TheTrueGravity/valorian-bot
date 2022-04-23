@@ -20,7 +20,7 @@ module.exports = {
                     if(!await client.isMod(message)) continue
                     description += `${category.name} - ${category.description}\n\n`
                 } else if (category.development) {
-                    console.log(category.development)
+                    console.log(category.development, client.arguments.development)
                     if(!client.arguments.development) continue
                     description += `${category.name} - ${category.description}\n\n`
                 } else {
