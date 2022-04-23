@@ -138,7 +138,7 @@ client.on('message', async message => {
                 return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
             }
         } catch {
-            return await reply(message, await createErrorEmbed(message, `There was an error running the command: ${command.name}`))
+            return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
         }
 
         console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
