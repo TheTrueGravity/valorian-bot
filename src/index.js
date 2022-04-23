@@ -33,6 +33,7 @@ const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
 })
 
+client.testers = testers
 client.arguments = arguments
 client.aliases = new Collection()
 client.commands = new Collection()
@@ -114,7 +115,7 @@ client.on('message', async message => {
 
     if (command) {
         if (arguments.development) {
-            if (!(testers.includes(message.author.id)) && command.name != "deployment") return
+            if (!testers.includes(message.author.id) && command.name != "deployment") return
         } else {
             for (var category of client.categories.get("categories")) {
                 if (category.name == command.category && category.mod) {
@@ -125,6 +126,9 @@ client.on('message', async message => {
 
         if (command.development) {
             if (!arguments.development) return
+        }
+        if (command.devOnly) {
+            if (!testers.includes(message.author.id)) return
         }
 
         const run = await command.run(client, message, args, args1)

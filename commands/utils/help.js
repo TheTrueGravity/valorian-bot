@@ -16,8 +16,15 @@ module.exports = {
             var description = ''
 
             for (var category of categories) {
-                if (category.mod) { if(!await client.isMod(message)) continue }
-                if (category.development) { if(!client.arguments.development) continue }
+                if (category.mod) {
+                    if (!await client.isMod(message)) continue
+                }
+                if (category.development) {
+                    if (!client.arguments.development) continue
+                }
+                if (category.devOnly) {
+                    if (!client.testers.includes(message.author.id)) continue
+                }
                 description += `${category.name} - ${category.description}\n\n`
             }
 
@@ -28,9 +35,11 @@ module.exports = {
                     if (category.name.toLowerCase() == args[0].toLowerCase()) {
                         if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
-                        } else if (category.development) if(!client.arguments.development) {
+                        } else if (category.development && !client.arguments.development) {
                             return await reply(message, await createErrorEmbed('That category is currently under development!', message.author))
-                        } 
+                        } else if (category.development && !client.testers.includes(message.author.id)) {
+                            return await reply(message, await createErrorEmbed('That category is only for developers!', message.author))
+                        }
 
                         var description = ''
                         const commands = client.categories.get(category.name)
@@ -56,8 +65,10 @@ module.exports = {
 
                         if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
-                        } else if (command.development) if(!client.arguments.development) {
+                        } else if (command.development && !client.arguments.development) {
                             return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
+                        } else if (category.development && !client.testers.includes(message.author.id)) {
+                            return await reply(message, await createErrorEmbed('That command is only for developers!', message.author))
                         }
 
                         var description =
