@@ -16,7 +16,6 @@ module.exports = {
             var description = ''
 
             for (var category of categories) {
-                console.log(category, client.arguments)
                 if (category.mod) {
                     if(!await client.isMod(message)) continue
                     description += `${category.name} - ${category.description}\n\n`
@@ -33,7 +32,9 @@ module.exports = {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
                     if (category.name.toLowerCase() == args[0].toLowerCase()) {
-                        if (category.mod && !(await client.isMod(message))) {
+                        if (category.development) if(!client.arguments.development) {
+                            return await reply(message, await createErrorEmbed('That category is currently under development!', message.author))
+                        } else if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
 
@@ -41,7 +42,6 @@ module.exports = {
                         const commands = client.categories.get(category.name)
 
                         for (var command of commands) {
-                            if (command.development) if(!client.arguments.development) continue
                             description +=
                                 `**Name:** ${command.name}\n**Description**: ${command.description}\n**Category**: ${command.category}`
                             if (command.aliases) {
@@ -62,9 +62,7 @@ module.exports = {
 
                         if (command.development) if(!client.arguments.development) {
                             return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
-                        }
-
-                        if (category.mod && !(await client.isMod(message))) {
+                        } else if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
 
