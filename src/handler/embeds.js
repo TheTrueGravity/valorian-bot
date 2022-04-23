@@ -1,4 +1,6 @@
-const { MessageEmbed } = require('discord.js')
+const {
+    MessageEmbed
+} = require('discord.js')
 
 // Return an embed with a given description and colour.
 module.exports.createBasicEmbed = async (description, colour) => {

@@ -1,5 +1,12 @@
-const { MessageEmbed, Client, Message } = require('discord.js')
-const { reply, createBasicEmbed } = require('../../src/handler/embeds')
+const {
+    MessageEmbed,
+    Client,
+    Message
+} = require('discord.js')
+const {
+    reply,
+    createBasicEmbed
+} = require('../../src/handler/embeds')
 
 module.exports = {
     // Name of the command
@@ -21,7 +28,7 @@ module.exports = {
      * @param {Message} message The message sent
      * @param {String[]} args An array of the command parameters
      * @param {String} args1 The raw string of the command parameters
-    **/
+     **/
     run: async (client, message, args, args1) => {
         const prefixes = await client.getPrefixes()
 

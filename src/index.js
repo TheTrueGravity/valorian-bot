@@ -127,7 +127,7 @@ client.on('message', async message => {
         }
 
         const run = await command.run(client, message, args, args1)
-        
+
         if (run instanceof Error) {
             return message.reply("There was an error running this command!")
         }

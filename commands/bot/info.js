@@ -1,5 +1,12 @@
-const { MessageEmbed, Client, Message } = require('discord.js')
-const { reply, createFieldsEmbed } = require('../../src/handler/embeds')
+const {
+    MessageEmbed,
+    Client,
+    Message
+} = require('discord.js')
+const {
+    reply,
+    createFieldsEmbed
+} = require('../../src/handler/embeds')
 
 module.exports = {
     // Name of the command
@@ -22,10 +29,9 @@ module.exports = {
      * @param {String[]} args An array of the command parameters
      * @param {String} args1 The raw string of the command parameters
      * 
-    **/
+     **/
     run: async (client, message, args, args1) => {
-        fields = [
-            {
+        fields = [{
                 name: "Track the bots progress at",
                 value: "https://trello.com/b/NpJeJGYU/valorian-bot!"
             },

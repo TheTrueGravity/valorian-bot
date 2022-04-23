@@ -1,9 +1,9 @@
 export class Buffer {
-    private buffer: Array<any>
+    private buffer: Array < any >
 
-    private clear() {
-        this.buffer = []
-    }
+        private clear() {
+            this.buffer = []
+        }
 
     public add(data: any) {
         this.buffer[this.buffer.length] = data

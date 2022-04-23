@@ -1,4 +1,6 @@
-const { MessageEmbed } = require('discord.js')
+const {
+    MessageEmbed
+} = require('discord.js')
 
 module.exports = {
     name: "removemessage",
@@ -7,6 +9,6 @@ module.exports = {
     args: "{Channel name or id} {Title} {Colour} {Embed id (found at the bottom of message)}",
     development: true,
     run: async (client, message, args, args1) => {
-        
+
     }
 }

@@ -1,7 +1,12 @@
 const {
     MessageEmbed
 } = require('discord.js')
-const { reply, createErrorEmbed, createAuthorEmbed, createTitleEmbed } = require('../../src/handler/embeds')
+const {
+    reply,
+    createErrorEmbed,
+    createAuthorEmbed,
+    createTitleEmbed
+} = require('../../src/handler/embeds')
 
 async function getCategories(client) {
     const categories = client.categories.get('categories')
@@ -86,7 +91,7 @@ module.exports = {
                         if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
-                        
+
                         var description = ''
                         const commands = await getCommands(client, category.name)
 
@@ -109,7 +114,7 @@ module.exports = {
                     if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
                         const command = await getCommand(client, commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
 
-                        if (category.mod && !(await client.isMod(message))) {                            
+                        if (category.mod && !(await client.isMod(message))) {
                             return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
                         }
 
@@ -122,7 +127,6 @@ module.exports = {
 
                         await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
                     }
-
                 }
             }
         }

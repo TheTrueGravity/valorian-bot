@@ -1,4 +1,6 @@
-const { MessageEmbed } = require('discord.js')
+const {
+    MessageEmbed
+} = require('discord.js')
 
 module.exports = {
     name: "addmessage",
@@ -7,6 +9,6 @@ module.exports = {
     args: "{Channel name or id} {Title} {Colour}",
     development: true,
     run: async (client, message, args, args1) => {
-        
+
     }
 }

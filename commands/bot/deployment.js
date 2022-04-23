@@ -1,5 +1,12 @@
-const { MessageEmbed, Client, Message } = require('discord.js')
-const { reply, createAuthorEmbed } = require('../../src/handler/embeds')
+const {
+    MessageEmbed,
+    Client,
+    Message
+} = require('discord.js')
+const {
+    reply,
+    createAuthorEmbed
+} = require('../../src/handler/embeds')
 
 module.exports = {
     // Name of the command
@@ -22,7 +29,7 @@ module.exports = {
      * @param {String[]} args An array of the command parameters
      * @param {String} args1 The raw string of the command parameters
      * 
-    **/
+     **/
     run: async (client, message, args, args1) => {
         await reply(message, await createAuthorEmbed(`Deployment version: ${await client.getDeployment()}`, process.env.MAIN_EMBED_COLOUR, message.author))
     }

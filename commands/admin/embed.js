@@ -1,4 +1,6 @@
-const { MessageEmbed } = require('discord.js')
+const {
+    MessageEmbed
+} = require('discord.js')
 
 module.exports = {
     name: "embed",
@@ -7,9 +9,12 @@ module.exports = {
     args: ["{channel name or id} {text or json formatting}"],
     run: async (client, message, args, args1) => {
         let channelId = 0
-        if (args[0].startsWith('<#')) { channelId = args[0].substring(2, args[0].length - 1) }
-        else if (parseInt(args[0])) { channelId = args[0] }
-        
+        if (args[0].startsWith('<#')) {
+            channelId = args[0].substring(2, args[0].length - 1)
+        } else if (parseInt(args[0])) {
+            channelId = args[0]
+        }
+
         const msg = args1.replace(args[0], '').trimStart()
 
         var embed = new MessageEmbed()
@@ -41,10 +46,12 @@ module.exports = {
             embed = new MessageEmbed({
                 description: msg
             })
-        }        
-        
+        }
+
         const channel = await message.guild.channels.fetch(channelId)
 
-        await channel.send({ embeds: [embed] })
+        await channel.send({
+            embeds: [embed]
+        })
     }
 }
