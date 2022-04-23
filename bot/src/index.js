@@ -93,10 +93,9 @@ client.on('message', async message => {
     var prefix = ''
 
     for (const _prefix of prefixes) {
-        logger.debug(message.content.toLowerCase())
         if (message.content.toLowerCase().startsWith(_prefix)) {
             hasPrefix = true;
-            prefix = _prefix
+            prefix = message.content.slice(0, _prefix.length)
         }
     }
 
