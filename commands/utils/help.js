@@ -55,7 +55,7 @@ module.exports = {
                 }
             } else {
                 for (var category of categories) {
-                    const commands = await getCommands(client, category.name)
+                    const commands = await client.categories.get(category.name)
 
                     if (commands.map(x => x.name).find(e => e.toLowerCase() == args[0].toLowerCase())) {
                         const command = await client.commands.get(commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
