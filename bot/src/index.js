@@ -50,6 +50,7 @@ commands = require('./handler/command')(client, process.env.COMMANDS_FOLDER)
 console.log(commands.toString())
 
 client.on("ready", async () => {
+    logger.info('-------------------------------------------')
     logger.info(`Logged in as ${client.user.tag}!`)
     logger.info(`Client id: ${client.user.id}`)
     logger.info(`Deployment: ${await client.getDeployment()}`)
