@@ -126,7 +126,11 @@ client.on('message', async message => {
             }
         }
         console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) ran command: ${command.name}`)
-        command.run(client, message, args, args1)
+        try {
+            command.run(client, message, args, args1)
+        } catch {
+            return message.reply("An error occured while running the command!")
+        }
     } else return
 })
 
