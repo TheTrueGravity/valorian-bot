@@ -14,7 +14,7 @@ module.exports = (client, commandsFolder) => {
 
             if (file == '_category.js') {
                 categories.push(pull)
-                break
+                continue
             }
 
             temp[temp.length] = {
