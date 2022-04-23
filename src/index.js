@@ -116,25 +116,25 @@ client.on('message', async message => {
             if (!(testers.includes(message.author.id)) && command.name != "deployment") return
         } else {
             for (var category of client.categories.get("categories")) {
-                if (category.name == command.category) {
-                    if (category.mod) {
-                        if (!await client.isMod(message)) return
-                    } else if (command.development) {
-                        if (!arguments.development) return
-                    }
+                if (category.name == command.category && category.mod) {
+                    if (!await client.isMod(message)) return
                 }
             }
         }
-        console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) ran command: ${command.name}`)
-        
+
+        console.log(command)
+
+        if (command.development) {
+            if (!arguments.development) return
+        }
+
         const run = await command.run(client, message, args, args1)
-
-        console.log(run)
-
+        
         if (run instanceof Error) {
-            console.error(run)
             return message.reply("There was an error running this command!")
         }
+
+        console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
     } else return
 })
 
