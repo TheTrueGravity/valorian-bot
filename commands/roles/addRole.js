@@ -17,7 +17,7 @@ module.exports = {
     
             const config = await read('./config/roles.json')
         } catch (err) {
-            throw err
+            console.error(err)
         }
     }
 }
