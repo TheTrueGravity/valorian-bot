@@ -137,7 +137,8 @@ client.on('message', async message => {
             if (run instanceof Error) {
                 return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
             }
-        } catch {
+        } catch (error) {
+            console.error(error)
             return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
         }
 
