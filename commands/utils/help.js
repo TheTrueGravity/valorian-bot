@@ -20,13 +20,14 @@ module.exports = {
                 if (category.mod) {
                     if(!await client.isMod(message)) continue
                     description += `${category.name} - ${category.description}\n\n`
-                } else if (category.development) {
-                    console.log(category.development, client.arguments.development)
+                    continue
+                }
+                if (category.development) {
                     if(!client.arguments.development) continue
                     description += `${category.name} - ${category.description}\n\n`
-                } else {
-                    description += `${category.name} - ${category.description}\n\n`
+                    continue
                 }
+                description += `${category.name} - ${category.description}\n\n`
             }
 
             await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
