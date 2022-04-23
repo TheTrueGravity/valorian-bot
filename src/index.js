@@ -33,8 +33,9 @@ const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
 })
 
-client.commands = new Collection()
+client.arguments = arguments
 client.aliases = new Collection()
+client.commands = new Collection()
 client.categories = new Collection()
 
 commands = require('./handler/command')(client, process.env.COMMANDS_FOLDER)
