@@ -32,7 +32,7 @@ const arguments = argParse("", [{
 
 const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
-const logger = new Logger(process.env.LOG_FILE_PATH, process.env.ERROR_FILE_PATH)
+const logger = new Logger(process.env.LOG_DIR)
 
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
@@ -53,7 +53,6 @@ client.on("ready", async () => {
     logger.info(`Logged in as ${client.user.tag}!`)
     logger.info(`Deployment: ${await client.getDeployment()}`)
     logger.info(`Version: ${await client.getVersion()}`)
-    logger.info(`Shard: ${client.shard.id}`)
     
     client.user.setActivity(`${prefixes[0]}help`, {
         type: 'LISTENING'
@@ -75,7 +74,7 @@ client.isMod = async function (message) {
 client.getVersion = async function () {
     const {
         version
-    } = require('../package.json')
+    } = require('../../package.json')
     return version
 }
 client.getDeployment = async function () {
@@ -155,3 +154,4 @@ client.on('message', async message => {
 
 logger.info('Client logging in...')
 client.login(process.env.TOKEN)
+logger.info('Client logged in!')

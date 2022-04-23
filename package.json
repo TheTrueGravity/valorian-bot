@@ -15,10 +15,10 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm build && node src\\index.js --development",
-    "beta": "npm build && node src\\index.js --beta",
-    "start": "npm build && node src\\index.js",
-    "deploy": "npm build && git add * & git commit -m \"main\" & git push -u origin main"
+    "test": "npm run build && node bot\\src\\index.js --development",
+    "beta": "npm run build && node bot\\src\\index.js --beta",
+    "start": "npm run build && node bot\\src\\index.js",
+    "deploy": "npm run build && git add * & git commit -m \"main\" & git push -u origin main"
   },
   "repository": {
     "type": "git",

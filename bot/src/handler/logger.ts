@@ -14,44 +14,52 @@ export interface ILogger {
     verbose(message: string): void;
 }
 
+export function getDateAsString(forFileName: boolean = false): string {
+    const date_ob = new Date()
+        
+    var date = ("0" + date_ob.getDate()).slice(-2)
+    var month = ("0" + (date_ob.getMonth() + 1)).slice(-2)
+    var year = date_ob.getFullYear()
+    var hours = date_ob.getHours()
+    var minutes = date_ob.getMinutes()
+    var seconds = date_ob.getSeconds()
+
+    if (forFileName) {
+        return `${date}-${month}-${year}_${hours}-${minutes}-${seconds}`
+    } else {
+        return `${date}-${month}-${year} ${hours}:${minutes}:${seconds}`
+    }
+}
+
 export default class Logger implements ILogger {
-    private logFile: PathLike
-    private errorFile: PathLike
+    private logFolder: PathLike
+    private logFileName: string
+    private logFilePath(): PathOrFileDescriptor {
+        return this.logFolder + '/' + this.logFileName
+    }
 
-    constructor(logFile: PathLike, errorFile: PathLike) {
-        this.logFile = logFile
-        this.errorFile = errorFile
+    constructor(logFolder: PathLike) {
+        this.logFolder = logFolder
 
-        if (!existsSync(logFile)) {
-            writeFileSync(logFile, '', {
-                encoding: 'utf8'
-            })
-        }
-        if (!existsSync(errorFile)) {
-            writeFileSync(errorFile, '', {
-                encoding: 'utf8'
-            })
-        }
+        this.logFileName = `${getDateAsString(true)}.log`
 
+        console.log(`Logging to ${this.logFilePath()}`)
+
+        writeFileSync(this.logFilePath(), '', {
+            encoding: 'utf8'
+        })
+
+        this.writeFile('------------------------------------------------------')
         this.info('Logger initialized')
     }
 
-    private writeFile(file: PathOrFileDescriptor, message: String) {
+    private writeFile(message: String) {
+        const file = `${this.logFolder}/${this.logFileName}`
         var fileData = readFileSync(file, {
             encoding: 'utf8'
         })
-        let date_ob = new Date()
-        
-        let date = ("0" + date_ob.getDate()).slice(-2)
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2)
-        let year = date_ob.getFullYear()
-        let hours = date_ob.getHours()
-        let minutes = date_ob.getMinutes()
-        let seconds = date_ob.getSeconds()
-        
-        let date_string = date + "-" + month + "-" + year + " " + hours + ":" + minutes + ":" + seconds;
 
-        fileData += `${date_string} ${message}\n`
+        fileData += `${getDateAsString()} -> ${message}\n`
         writeFileSync(file, fileData, {
             encoding: 'utf8'
         })
@@ -60,26 +68,26 @@ export default class Logger implements ILogger {
     public error(message: string | Error): void {
         const msg = '[ERROR] ' + message
         console.error(msg)
-        this.writeFile(this.errorFile, msg)
+        this.writeFile(msg)
     }
     public warn(message: string): void {
         const msg = '[WARN] ' + message
         console.log(msg)
-        this.writeFile(this.logFile, msg)
+        this.writeFile(msg)
     }
     public info(message: string): void {
         const msg = '[INFO] ' + message
         console.log(msg)
-        this.writeFile(this.logFile, msg)
+        this.writeFile(msg)
     }
     public debug(message: string): void {
         const msg = '[DEBUG] ' + message
         console.log(msg)
-        this.writeFile(this.logFile, msg)
+        this.writeFile(msg)
     }
     public verbose(message: string): void {
         const msg = '[VERBOSE] ' + message
         console.log(msg)
-        this.writeFile(this.logFile, msg)
+        this.writeFile(msg)
     }
 }

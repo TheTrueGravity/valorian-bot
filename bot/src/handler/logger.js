@@ -1,35 +1,43 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDateAsString = void 0;
 const fs_1 = require("fs");
+function getDateAsString(forFileName = false) {
+    const date_ob = new Date();
+    var date = ("0" + date_ob.getDate()).slice(-2);
+    var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    var year = date_ob.getFullYear();
+    var hours = date_ob.getHours();
+    var minutes = date_ob.getMinutes();
+    var seconds = date_ob.getSeconds();
+    if (forFileName) {
+        return `${date}-${month}-${year}_${hours}-${minutes}-${seconds}`;
+    }
+    else {
+        return `${date}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+    }
+}
+exports.getDateAsString = getDateAsString;
 class Logger {
-    constructor(logFile, errorFile) {
-        this.logFile = logFile;
-        this.errorFile = errorFile;
-        if (!fs_1.existsSync(logFile)) {
-            fs_1.writeFileSync(logFile, '', {
-                encoding: 'utf8'
-            });
-        }
-        if (!fs_1.existsSync(errorFile)) {
-            fs_1.writeFileSync(errorFile, '', {
-                encoding: 'utf8'
-            });
-        }
+    constructor(logFolder) {
+        this.logFolder = logFolder;
+        this.logFileName = `${getDateAsString(true)}.log`;
+        console.log(`Logging to ${this.logFilePath()}`);
+        fs_1.writeFileSync(this.logFilePath(), '', {
+            encoding: 'utf8'
+        });
+        this.writeFile('------------------------------------------------------');
         this.info('Logger initialized');
     }
-    writeFile(file, message) {
+    logFilePath() {
+        return this.logFolder + '/' + this.logFileName;
+    }
+    writeFile(message) {
+        const file = `${this.logFolder}/${this.logFileName}`;
         var fileData = fs_1.readFileSync(file, {
             encoding: 'utf8'
         });
-        let date_ob = new Date();
-        let date = ("0" + date_ob.getDate()).slice(-2);
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        let year = date_ob.getFullYear();
-        let hours = date_ob.getHours();
-        let minutes = date_ob.getMinutes();
-        let seconds = date_ob.getSeconds();
-        let date_string = date + "-" + month + "-" + year + " " + hours + ":" + minutes + ":" + seconds;
-        fileData += `${date_string} ${message}\n`;
+        fileData += `${getDateAsString()} -> ${message}\n`;
         fs_1.writeFileSync(file, fileData, {
             encoding: 'utf8'
         });
@@ -37,27 +45,27 @@ class Logger {
     error(message) {
         const msg = '[ERROR] ' + message;
         console.error(msg);
-        this.writeFile(this.errorFile, msg);
+        this.writeFile(msg);
     }
     warn(message) {
         const msg = '[WARN] ' + message;
         console.log(msg);
-        this.writeFile(this.logFile, msg);
+        this.writeFile(msg);
     }
     info(message) {
         const msg = '[INFO] ' + message;
         console.log(msg);
-        this.writeFile(this.logFile, msg);
+        this.writeFile(msg);
     }
     debug(message) {
         const msg = '[DEBUG] ' + message;
         console.log(msg);
-        this.writeFile(this.logFile, msg);
+        this.writeFile(msg);
     }
     verbose(message) {
         const msg = '[VERBOSE] ' + message;
         console.log(msg);
-        this.writeFile(this.logFile, msg);
+        this.writeFile(msg);
     }
 }
 exports.default = Logger;
