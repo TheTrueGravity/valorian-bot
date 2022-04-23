@@ -5,6 +5,9 @@ const {
 const {
     argParse
 } = require('./handler/args')
+const {
+    default: Logger
+} = require('./handler/logger')
 const { reply, createErrorEmbed } = require('./handler/embeds')
 
 require('dotenv').config()
@@ -29,11 +32,13 @@ const arguments = argParse("", [{
 
 const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
+const logger = new Logger(process.env.LOG_FILE_PATH, process.env.ERROR_FILE_PATH)
 
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
 })
 
+client.logger = logger
 client.testers = testers
 client.arguments = arguments
 client.aliases = new Collection()
@@ -45,15 +50,18 @@ commands = require('./handler/command')(client, process.env.COMMANDS_FOLDER)
 console.log(commands.toString())
 
 client.on("ready", async () => {
+    logger.info(`Logged in as ${client.user.tag}!`)
+    logger.info(`Deployment: ${await client.getDeployment()}`)
+    logger.info(`Version: ${await client.getVersion()}`)
+    logger.info(`Shard: ${client.shard.id}`)
+    
+    client.user.setActivity(`${prefixes[0]}help`, {
+        type: 'LISTENING'
+    })
     console.log()
     console.log('Logged in as:      ', client.user.username)
     console.log('Client ID:         ', client.user.id)
     console.log('-------------------------------------------')
-    await client.user.setActivity('The official valorian discord bot!', {
-        type: 'PLAYING',
-        name: 'VALORIAN SURVIVAL',
-        url: 'https://www.twitch.tv/springfulofficial'
-    })
 })
 
 client.on("error", (e) => {
@@ -64,7 +72,6 @@ client.on("error", (e) => {
 client.isMod = async function (message) {
     return (message.guild.ownerId == message.author.id || message.author.id == "487314847470714907")
 }
-
 client.getVersion = async function () {
     const {
         version
@@ -146,4 +153,5 @@ client.on('message', async message => {
     } else return
 })
 
+logger.info('Client logging in...')
 client.login(process.env.TOKEN)
