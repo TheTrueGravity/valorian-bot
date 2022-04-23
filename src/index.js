@@ -5,6 +5,7 @@ const {
 const {
     argParse
 } = require('./handler/args')
+const { reply, createErrorEmbed } = require('./handler/embeds')
 
 require('dotenv').config()
 
@@ -137,11 +138,7 @@ client.on('message', async message => {
                 return message.reply("There was an error running this command!")
             }
         } catch {
-            return message.reply("There was an error running this command!")
-        }
-
-        if (run instanceof Error) {
-            return message.reply("There was an error running this command!")
+            return await reply(message, await createErrorEmbed(message, `There was an error running the command: ${command.name}`))
         }
 
         console.log(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
