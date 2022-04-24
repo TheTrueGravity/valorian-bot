@@ -37,33 +37,33 @@ class Logger {
         var fileData = fs_1.readFileSync(file, {
             encoding: 'utf8'
         });
-        fileData += `${getDateAsString()} -> ${message}\n`;
-        fs_1.writeFileSync(file, fileData, {
-            encoding: 'utf8'
-        });
+        fileData +=
+            fs_1.writeFileSync(file, fileData, {
+                encoding: 'utf8'
+            });
     }
     error(message) {
-        const msg = '[ERROR] ' + message;
+        const msg = getDateAsString() + "->" + '[ERROR] ' + message;
         console.error(msg);
         this.writeFile(msg);
     }
     warn(message) {
-        const msg = '[WARN] ' + message;
+        const msg = getDateAsString() + "->" + '[WARN] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     info(message) {
-        const msg = '[INFO] ' + message;
+        const msg = getDateAsString() + "->" + '[INFO] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     debug(message) {
-        const msg = '[DEBUG] ' + message;
+        const msg = getDateAsString() + "->" + '[DEBUG] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     verbose(message) {
-        const msg = '[VERBOSE] ' + message;
+        const msg = getDateAsString() + "->" + '[VERBOSE] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
