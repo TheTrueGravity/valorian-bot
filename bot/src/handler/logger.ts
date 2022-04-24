@@ -59,7 +59,7 @@ export default class Logger implements ILogger {
             encoding: 'utf8'
         })
 
-        fileData +=
+        fileData += message
         writeFileSync(file, fileData, {
             encoding: 'utf8'
         })
