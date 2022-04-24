@@ -66,27 +66,27 @@ export default class Logger implements ILogger {
     }
 
     public error(message: string | Error): void {
-        const msg =  getDateAsString() + "->" + '[ERROR] ' + message
+        const msg =  getDateAsString() + " -> " + '[ERROR] ' + message
         console.error(msg)
         this.writeFile(msg)
     }
     public warn(message: string): void {
-        const msg = getDateAsString() + "->" + '[WARN] ' + message
+        const msg = getDateAsString() + " -> " + '[WARN] ' + message
         console.log(msg)
         this.writeFile(msg)
     }
     public info(message: string): void {
-        const msg = getDateAsString() + "->" + '[INFO] ' + message
+        const msg = getDateAsString() +  "-> " + '[INFO] ' + message
         console.log(msg)
         this.writeFile(msg)
     }
     public debug(message: string): void {
-        const msg = getDateAsString() + "->" + '[DEBUG] ' + message
+        const msg = getDateAsString() + " -> " + '[DEBUG] ' + message
         console.log(msg)
         this.writeFile(msg)
     }
     public verbose(message: string): void {
-        const msg = getDateAsString() + "->" + '[VERBOSE] ' + message
+        const msg = getDateAsString() + " -> " + '[VERBOSE] ' + message
         console.log(msg)
         this.writeFile(msg)
     }
