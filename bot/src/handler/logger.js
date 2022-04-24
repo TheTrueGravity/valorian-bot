@@ -43,27 +43,27 @@ class Logger {
             });
     }
     error(message) {
-        const msg = getDateAsString() + "->" + '[ERROR] ' + message;
+        const msg = getDateAsString() + " -> " + '[ERROR] ' + message;
         console.error(msg);
         this.writeFile(msg);
     }
     warn(message) {
-        const msg = getDateAsString() + "->" + '[WARN] ' + message;
+        const msg = getDateAsString() + " -> " + '[WARN] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     info(message) {
-        const msg = getDateAsString() + "->" + '[INFO] ' + message;
+        const msg = getDateAsString() + "-> " + '[INFO] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     debug(message) {
-        const msg = getDateAsString() + "->" + '[DEBUG] ' + message;
+        const msg = getDateAsString() + " -> " + '[DEBUG] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
     verbose(message) {
-        const msg = getDateAsString() + "->" + '[VERBOSE] ' + message;
+        const msg = getDateAsString() + " -> " + '[VERBOSE] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }
