@@ -53,7 +53,7 @@ class Logger {
         this.writeFile(msg);
     }
     info(message) {
-        const msg = getDateAsString() + "-> " + '[INFO] ' + message;
+        const msg = getDateAsString() + " -> " + '[INFO] ' + message;
         console.log(msg);
         this.writeFile(msg);
     }

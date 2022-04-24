@@ -76,7 +76,7 @@ export default class Logger implements ILogger {
         this.writeFile(msg)
     }
     public info(message: string): void {
-        const msg = getDateAsString() +  "-> " + '[INFO] ' + message
+        const msg = getDateAsString() +  " -> " + '[INFO] ' + message
         console.log(msg)
         this.writeFile(msg)
     }
