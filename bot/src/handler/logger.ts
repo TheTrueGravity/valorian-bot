@@ -6,12 +6,16 @@ import {
     readFileSync,
     writeFileSync
 } from 'fs'
+
+export enum LogLevel {
+    ERROR = 0,
+    WARN = 1,
+    INFO = 2,
+    DEBUG = 3,
+    VERBOSE = 4
+}
 export interface ILogger {
-    error(message: string): void;
-    warn(message: string): void;
-    info(message: string): void;
-    debug(message: string): void;
-    verbose(message: string): void;
+    log(level: LogLevel, message: string | Error): void;
 }
 
 export function getDateAsString(forFileName: boolean = false): string {
@@ -31,14 +35,34 @@ export function getDateAsString(forFileName: boolean = false): string {
     }
 }
 
+function getMessageAsString(message: string): string {
+    return `[${getDateAsString()}] ->  ${message}`
+}
+
 export default class Logger implements ILogger {
     private logFolder: PathLike
     private logFileName: string
     private logFilePath(): PathOrFileDescriptor {
         return this.logFolder + '/' + this.logFileName
     }
+    private getLogLevel(level: LogLevel): string {
+        switch (level) {
+            case LogLevel.ERROR:
+                return '[ERROR]'
+            case LogLevel.WARN:
+                return '[WARN]'
+            case LogLevel.INFO:
+                return '[INFO]'
+            case LogLevel.DEBUG:
+                return '[DEBUG]'
+            case LogLevel.VERBOSE:
+                return '[VERBOSE]'
+            default:
+                return '[UNKNOWN]'
+        }
+    }
 
-    constructor(logFolder: PathLike) {
+    public constructor(logFolder: PathLike) {
         this.logFolder = logFolder
 
         this.logFileName = `${getDateAsString(true)}.log`
@@ -50,7 +74,6 @@ export default class Logger implements ILogger {
         })
 
         this.writeFile('------------------------------------------------------')
-        this.info('Logger initialized')
     }
 
     private writeFile(message: String) {
@@ -65,28 +88,23 @@ export default class Logger implements ILogger {
         })
     }
 
-    public error(message: string | Error): void {
-        const msg =  getDateAsString() + " -> " + '[ERROR] ' + message
-        console.error(msg)
-        this.writeFile(msg)
-    }
-    public warn(message: string): void {
-        const msg = getDateAsString() + " -> " + '[WARN] ' + message
-        console.log(msg)
-        this.writeFile(msg)
-    }
-    public info(message: string): void {
-        const msg = getDateAsString() +  " -> " + '[INFO] ' + message
-        console.log(msg)
-        this.writeFile(msg)
-    }
-    public debug(message: string): void {
-        const msg = getDateAsString() + " -> " + '[DEBUG] ' + message
-        console.log(msg)
-        this.writeFile(msg)
-    }
-    public verbose(message: string): void {
-        const msg = getDateAsString() + " -> " + '[VERBOSE] ' + message
+    public log(level: LogLevel, message: string | Error): void {
+        let msg: string
+
+        const logLevel = this.getLogLevel(level)
+        const logMessage = getMessageAsString((message instanceof Error ? message.message : message))
+
+        if (logMessage.includes('\n')) {
+            const logMessages = logMessage.split('\n')
+            msg = "------------------------------------------------------\n"
+            for (let i = 0; i < logMessages.length; i++) {
+                msg += `${getDateAsString()} -> ${logLevel} ${logMessage}\n`
+            }
+            msg += "------------------------------------------------------\n"
+        } else {
+            msg = `${getDateAsString()} -> ${logLevel} ${logMessage}\n`
+        }
+
         console.log(msg)
         this.writeFile(msg)
     }

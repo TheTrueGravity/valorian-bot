@@ -6,9 +6,13 @@ const {
     argParse
 } = require('./handler/args')
 const {
-    default: Logger
+    default: Logger, LogLevel
 } = require('./handler/logger')
 const { reply, createErrorEmbed } = require('./handler/embeds')
+
+const logger = new Logger(process.env.LOG_DIR)
+
+logger.debug("Logger initialized!")
 
 require('dotenv').config()
 
@@ -33,7 +37,6 @@ const arguments = argParse("", [{
 const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
 const bot_channels = process.env.BOT_CHANNELS.split(' ')
-const logger = new Logger(process.env.LOG_DIR)
 
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS']
@@ -48,15 +51,15 @@ client.categories = new Collection()
 
 commands = require('./handler/command')(client, process.env.COMMANDS_FOLDER)
 
-logger.verbose(commands.toString())
+logger.log(LogLevel.VERBOSE, commands.toString())
 
 client.on("ready", async () => {
-    logger.info('-------------------------------------------')
-    logger.info(`Logged in as ${client.user.tag}!`)
-    logger.info(`Client id: ${client.user.id}`)
-    logger.info(`Deployment: ${await client.getDeployment()}`)
-    logger.info(`Version: ${await client.getVersion()}`)
-    logger.info('-------------------------------------------')
+    logger.log(LogLevel.INFO,'-------------------------------------------')
+    logger.log(LogLevel.INFO,`Logged in as ${client.user.tag}!`)
+    logger.log(LogLevel.INFO,`Client id: ${client.user.id}`)
+    logger.log(LogLevel.INFO,`Deployment: ${await client.getDeployment()}`)
+    logger.log(LogLevel.INFO,`Version: ${await client.getVersion()}`)
+    logger.log(LogLevel.INFO,'-------------------------------------------')
 
     client.user.setActivity(`${prefixes[0]}help`, {
         type: 'LISTENING'
@@ -64,7 +67,7 @@ client.on("ready", async () => {
 })
 
 client.on("error", (err) => {
-    return logger.error(err)
+    return logger.log(LogLevel.ERROR, err)
 })
 
 client.isMod = async function (message) {
@@ -144,14 +147,14 @@ client.on('message', async message => {
                 return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
             }
         } catch (error) {
-            logger.error(error)
+            logger.log(LogLevel.ERROR, error)
             return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
         }
 
-        logger.verbose(`${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
+        logger.log(LogLevel.VERBOSE, `${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
     } else return
 })
 
-logger.info('Client logging in...')
+logger.log(LogLevel.INFO, 'Client logging in...')
 client.login(process.env.TOKEN)
-logger.info('Client logged in!')
+logger.log(LogLevel.INFO, 'Client logged in!')

@@ -1,7 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDateAsString = void 0;
+exports.getDateAsString = exports.LogLevel = void 0;
 const fs_1 = require("fs");
+var LogLevel;
+(function (LogLevel) {
+    LogLevel[LogLevel["ERROR"] = 0] = "ERROR";
+    LogLevel[LogLevel["WARN"] = 1] = "WARN";
+    LogLevel[LogLevel["INFO"] = 2] = "INFO";
+    LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
+    LogLevel[LogLevel["VERBOSE"] = 4] = "VERBOSE";
+})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 function getDateAsString(forFileName = false) {
     const date_ob = new Date();
     var date = ("0" + date_ob.getDate()).slice(-2);
@@ -18,6 +26,9 @@ function getDateAsString(forFileName = false) {
     }
 }
 exports.getDateAsString = getDateAsString;
+function getMessageAsString(message) {
+    return `[${getDateAsString()}] ->  ${message}`;
+}
 class Logger {
     constructor(logFolder) {
         this.logFolder = logFolder;
@@ -27,10 +38,25 @@ class Logger {
             encoding: 'utf8'
         });
         this.writeFile('------------------------------------------------------');
-        this.info('Logger initialized');
     }
     logFilePath() {
         return this.logFolder + '/' + this.logFileName;
+    }
+    getLogLevel(level) {
+        switch (level) {
+            case LogLevel.ERROR:
+                return '[ERROR]';
+            case LogLevel.WARN:
+                return '[WARN]';
+            case LogLevel.INFO:
+                return '[INFO]';
+            case LogLevel.DEBUG:
+                return '[DEBUG]';
+            case LogLevel.VERBOSE:
+                return '[VERBOSE]';
+            default:
+                return '[UNKNOWN]';
+        }
     }
     writeFile(message) {
         const file = `${this.logFolder}/${this.logFileName}`;
@@ -42,28 +68,21 @@ class Logger {
             encoding: 'utf8'
         });
     }
-    error(message) {
-        const msg = getDateAsString() + " -> " + '[ERROR] ' + message;
-        console.error(msg);
-        this.writeFile(msg);
-    }
-    warn(message) {
-        const msg = getDateAsString() + " -> " + '[WARN] ' + message;
-        console.log(msg);
-        this.writeFile(msg);
-    }
-    info(message) {
-        const msg = getDateAsString() + " -> " + '[INFO] ' + message;
-        console.log(msg);
-        this.writeFile(msg);
-    }
-    debug(message) {
-        const msg = getDateAsString() + " -> " + '[DEBUG] ' + message;
-        console.log(msg);
-        this.writeFile(msg);
-    }
-    verbose(message) {
-        const msg = getDateAsString() + " -> " + '[VERBOSE] ' + message;
+    log(level, message) {
+        let msg;
+        const logLevel = this.getLogLevel(level);
+        const logMessage = getMessageAsString((message instanceof Error ? message.message : message));
+        if (logMessage.includes('\n')) {
+            const logMessages = logMessage.split('\n');
+            msg = "------------------------------------------------------\n";
+            for (let i = 0; i < logMessages.length; i++) {
+                msg += `${getDateAsString()} -> ${logLevel} ${logMessage}\n`;
+            }
+            msg += "------------------------------------------------------\n";
+        }
+        else {
+            msg = `${getDateAsString()} -> ${logLevel} ${logMessage}\n`;
+        }
         console.log(msg);
         this.writeFile(msg);
     }
