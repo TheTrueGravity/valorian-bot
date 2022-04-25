@@ -10,11 +10,11 @@ const {
 } = require('./handler/logger')
 const { reply, createErrorEmbed } = require('./handler/embeds')
 
+require('dotenv').config()
+
 const logger = new Logger(process.env.LOG_DIR)
 
 logger.debug("Logger initialized!")
-
-require('dotenv').config()
 
 const arguments = argParse("", [{
         name: '--development',
