@@ -157,6 +157,8 @@ client.on('messageCreate', async message => {
     } else return
 })
 
+client.on("debug", ( e ) => console.log(e));
+
 logger.log(LogLevel.INFO, 'Client logging in...')
 client.login(process.env.TOKEN)
 logger.log(LogLevel.INFO, 'Client logged in!')
