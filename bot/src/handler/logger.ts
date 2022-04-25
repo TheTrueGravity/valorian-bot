@@ -35,8 +35,8 @@ export function getDateAsString(forFileName: boolean = false): string {
     }
 }
 
-function getMessageAsString(message: string): string {
-    return `[${getDateAsString()}] ->  ${message}`
+function getMessageAsString(level: string, message: string): string {
+    return `[${getDateAsString()}] ${level} | ${message}\n`
 }
 
 export default class Logger implements ILogger {
@@ -45,6 +45,7 @@ export default class Logger implements ILogger {
     private logFilePath(): PathOrFileDescriptor {
         return this.logFolder + '/' + this.logFileName
     }
+
     private getLogLevel(level: LogLevel): string {
         switch (level) {
             case LogLevel.ERROR:
@@ -89,20 +90,22 @@ export default class Logger implements ILogger {
     }
 
     public log(level: LogLevel, message: string | Error): void {
+        // console.log(message)
         let msg: string
 
         const logLevel = this.getLogLevel(level)
-        const logMessage = getMessageAsString((message instanceof Error ? message.message : message))
+        const logMessage = (message instanceof Error ? message.message : message)
 
         if (logMessage.includes('\n')) {
-            const logMessages = logMessage.split('\n')
+            const logMessages = logMessage.split(/\n/)
             msg = "------------------------------------------------------\n"
+            msg += getMessageAsString(logLevel, "\n")
             for (let i = 0; i < logMessages.length; i++) {
-                msg += `${getDateAsString()} -> ${logLevel} ${logMessage}\n`
+                msg += logMessages[i] + "\n"
             }
             msg += "------------------------------------------------------\n"
         } else {
-            msg = `${getDateAsString()} -> ${logLevel} ${logMessage}\n`
+            msg = getMessageAsString(logLevel, logMessage)
         }
 
         console.log(msg)

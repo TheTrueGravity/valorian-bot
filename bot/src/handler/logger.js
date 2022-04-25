@@ -26,8 +26,8 @@ function getDateAsString(forFileName = false) {
     }
 }
 exports.getDateAsString = getDateAsString;
-function getMessageAsString(message) {
-    return `[${getDateAsString()}] ->  ${message}`;
+function getMessageAsString(level, message) {
+    return `[${getDateAsString()}] ${level} | ${message}\n`;
 }
 class Logger {
     constructor(logFolder) {
@@ -69,19 +69,21 @@ class Logger {
         });
     }
     log(level, message) {
+        // console.log(message)
         let msg;
         const logLevel = this.getLogLevel(level);
-        const logMessage = getMessageAsString((message instanceof Error ? message.message : message));
+        const logMessage = (message instanceof Error ? message.message : message);
         if (logMessage.includes('\n')) {
-            const logMessages = logMessage.split('\n');
+            const logMessages = logMessage.split(/\n/);
             msg = "------------------------------------------------------\n";
+            msg += getMessageAsString(logLevel, "\n");
             for (let i = 0; i < logMessages.length; i++) {
-                msg += `${getDateAsString()} -> ${logLevel} ${logMessage}\n`;
+                msg += logMessages[i] + "\n";
             }
             msg += "------------------------------------------------------\n";
         }
         else {
-            msg = `${getDateAsString()} -> ${logLevel} ${logMessage}\n`;
+            msg = getMessageAsString(logLevel, logMessage);
         }
         console.log(msg);
         this.writeFile(msg);

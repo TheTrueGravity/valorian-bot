@@ -14,7 +14,7 @@ require('dotenv').config()
 
 const logger = new Logger(process.env.LOG_DIR)
 
-logger.debug("Logger initialized!")
+logger.log(LogLevel.DEBUG, "Logger initialized!")
 
 const arguments = argParse("", [{
         name: '--development',
