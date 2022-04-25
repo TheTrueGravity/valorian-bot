@@ -92,7 +92,7 @@ client.getPrefixes = async function () {
     return prefixes
 }
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
     var hasPrefix = false;
     var prefix = ''
 
@@ -103,10 +103,12 @@ client.on('message', async message => {
         }
     }
 
+    console.log(prefix)
+
     if (message.author.bot) return
     if (!message.guild) return
     if (!hasPrefix) return
-    if (!bot_channels.includes(message.channel.id)) return
+    if (message.guildId == "923637184332984350" && !bot_channels.includes(message.channel.id)) return
 
     const args = message.content.slice(prefix).trim().replace(prefix, '').split(/ +/g)
     const args1 = message.content.slice(prefix).trimStart().replace(prefix, '').replace(args[0], '').trimStart()
