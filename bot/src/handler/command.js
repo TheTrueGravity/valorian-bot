@@ -30,6 +30,8 @@ module.exports = (client, commandsFolder) => {
                 devOnly: pull.devOnly
             }
 
+            console.log(temp)
+
             if (pull.name) {
                 client.commands.set(pull.name, pull)
                 table.addRow(file, "✅")
