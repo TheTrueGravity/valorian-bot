@@ -103,8 +103,6 @@ client.on('messageCreate', async message => {
         }
     }
 
-    console.log(prefix)
-
     if (message.author.bot) return
     if (!message.guild) return
     if (!hasPrefix) return
