@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDateAsString = exports.LogLevel = void 0;
 const fs_1 = require("fs");
+const os_1 = require("os");
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["ERROR"] = 0] = "ERROR";
@@ -30,14 +31,17 @@ function getMessageAsString(level, message) {
     return `[${getDateAsString()}] ${level} | ${message}\n`;
 }
 class Logger {
-    constructor(logFolder) {
-        this.logFolder = logFolder;
-        this.logFileName = `${getDateAsString(true)}.log`;
-        console.log(`Logging to ${this.logFilePath()}`);
-        fs_1.writeFileSync(this.logFilePath(), '', {
-            encoding: 'utf8'
-        });
-        this.writeFile('------------------------------------------------------');
+    constructor(config) {
+        this.logFolder = config.logFolder ? config.logFolder : os_1.tmpdir();
+        this.logFileName = (config === null || config === void 0 ? void 0 : config.logFileName) ? config.logFileName : `${getDateAsString(true)}.log`;
+        this.logToFile = ((config === null || config === void 0 ? void 0 : config.logToFile) != null) ? config.logToFile : true;
+        if (this.logToFile) {
+            console.log(`Logging to ${this.logFilePath()}`);
+            fs_1.writeFileSync(this.logFilePath(), '', {
+                encoding: 'utf8'
+            });
+            this.writeFile('------------------------------------------------------');
+        }
     }
     logFilePath() {
         return this.logFolder + '/' + this.logFileName;
@@ -69,7 +73,6 @@ class Logger {
         });
     }
     log(level, message) {
-        // console.log(message)
         let msg;
         const logLevel = this.getLogLevel(level);
         const logMessage = (message instanceof Error ? message.message : message);
@@ -86,7 +89,8 @@ class Logger {
             msg = getMessageAsString(logLevel, logMessage);
         }
         console.log(msg);
-        this.writeFile(msg);
+        if (this.logToFile)
+            this.writeFile(msg);
     }
 }
 exports.default = Logger;

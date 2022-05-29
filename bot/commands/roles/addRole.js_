@@ -7,6 +7,9 @@ const {
     reply,
     createErrorEmbed
 } = require('../../src/handler/embeds')
+const {
+    Role
+} =  require('../../src/types/roleTypes')
 
 module.exports = {
     name: "addrole",

@@ -31,6 +31,6 @@ module.exports = {
      * 
      **/
     run: async (client, message, args, args1) => {
-        await reply(message, await createAuthorEmbed(`Deployment version: ${await client.getDeployment()}`, process.env.MAIN_EMBED_COLOUR, message.author))
+        await reply(message, await createAuthorEmbed(`Deployment version: ${await client.getDeployment(client.arguments)}`, process.env.MAIN_EMBED_COLOUR, message.author))
     }
 }

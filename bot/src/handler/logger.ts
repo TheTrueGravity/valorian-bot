@@ -6,6 +6,7 @@ import {
     readFileSync,
     writeFileSync
 } from 'fs'
+import { tmpdir } from 'os';
 
 export enum LogLevel {
     ERROR = 0,
@@ -42,6 +43,7 @@ function getMessageAsString(level: string, message: string): string {
 export default class Logger implements ILogger {
     private logFolder: PathLike
     private logFileName: string
+    private logToFile: boolean
     private logFilePath(): PathOrFileDescriptor {
         return this.logFolder + '/' + this.logFileName
     }
@@ -63,18 +65,25 @@ export default class Logger implements ILogger {
         }
     }
 
-    public constructor(logFolder: PathLike) {
-        this.logFolder = logFolder
+    public constructor(config: {
+        logFolder?: PathLike,
+        logFileName?: string,
+        logToFile?: boolean
+    }) {
+        this.logFolder = config.logFolder? config.logFolder : tmpdir()
+        this.logFileName = config?.logFileName ? config.logFileName : `${getDateAsString(true)}.log`
+        this.logToFile = (config?.logToFile != null) ? config.logToFile : true
 
-        this.logFileName = `${getDateAsString(true)}.log`
+        if (this.logToFile) {
+            console.log(`Logging to ${this.logFilePath()}`)
+    
+            writeFileSync(this.logFilePath(), '', {
+                encoding: 'utf8'
+            })
+    
+            this.writeFile('------------------------------------------------------')
+        }
 
-        console.log(`Logging to ${this.logFilePath()}`)
-
-        writeFileSync(this.logFilePath(), '', {
-            encoding: 'utf8'
-        })
-
-        this.writeFile('------------------------------------------------------')
     }
 
     private writeFile(message: String) {
@@ -90,7 +99,6 @@ export default class Logger implements ILogger {
     }
 
     public log(level: LogLevel, message: string | Error): void {
-        // console.log(message)
         let msg: string
 
         const logLevel = this.getLogLevel(level)
@@ -109,6 +117,7 @@ export default class Logger implements ILogger {
         }
 
         console.log(msg)
-        this.writeFile(msg)
+        
+        if (this.logToFile) this.writeFile(msg)
     }
 }
