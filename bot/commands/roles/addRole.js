@@ -49,8 +49,6 @@ module.exports = {
                     const channel = await message.guild.channels.cache.get(config[r].channelID)
                     const msg = await channel.messages.fetch(r)
 
-                    console.log(msg)
-
                     var embedBody = config[r].embedBody += `\nReact with ${args[2]} to get <@&${role.id}>`
 
                     const embed = await createBasicEmbed(embedBody, process.env.MAIN_EMBED_COLOUR)
