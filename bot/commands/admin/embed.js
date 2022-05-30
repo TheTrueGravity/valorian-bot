@@ -15,7 +15,7 @@ module.exports = {
             channelId = args[0]
         }
 
-        const msg = args1.replace(args[0], '').trimStart()
+        var msg = args1.replace(args[0], '').trimStart()
 
         var body = ''
 
