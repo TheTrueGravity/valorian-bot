@@ -161,15 +161,14 @@ client.on('messageCreate', async message => {
                 }
             }
         }
-
-        if (command.development) {
-            if (!arguments.development) return
-        }
+        
         if (command.devOnly) {
             if (!testers.includes(message.author.id)) return
         }
         if (!command.development) {
             if (arguments.development) return
+        } else {
+            if (!arguments.development) return
         }
 
         try {
