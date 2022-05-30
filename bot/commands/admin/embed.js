@@ -47,7 +47,6 @@ module.exports = {
         } catch {
             if (msg.includes('@everyone') || msg.includes('@here')) {
                 body = msg.includes('@everyone') ? '@everyone' : '@here'
-                console.log(msg.replace(body, ''))
                 msg = msg.replace('@everyone', '')
                 msg = msg.replace('@here', '')
             }

@@ -195,10 +195,11 @@ async function start() {
     logger.log(LogLevel.VERBOSE, _tasks.toString())
     
     tasks.forEach(async task => {
+        if (task.development) {
+            if (!arguments.development) return
+        }
         await task.init(client)
     })
-
-    console.log(tasks)
 
     logger.log(LogLevel.INFO, 'Client logging in...')
     client.login(process.env.TOKEN)
