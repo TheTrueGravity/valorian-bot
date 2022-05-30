@@ -57,7 +57,9 @@ module.exports = {
 
         const channel = await message.guild.channels.fetch(channelId)
 
-        await channel.send(body, {
+        await channel.send(body)
+
+        await channel.send({
             embeds: [embed]
         })
     }
