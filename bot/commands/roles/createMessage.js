@@ -2,19 +2,24 @@ const {
     Role
 } = require('../../src/types/roleTypes')
 const {
-    createAuthorEmbed
+    createAuthorEmbed,
+    createBasicEmbed
 } = require('../../src/handler/embeds')
 const {
     Client,
     Message
 } = require('discord.js')
+const {
+    readFileSync,
+    writeFileSync
+} = require('fs')
 
 module.exports = {
     name: "createmessage",
     category: "roles",
     description: "Creates a reaction message!",
     args: "",
-    development: true,
+    development: false,
     /**
      * Code to run when command is called
      * 
@@ -25,8 +30,6 @@ module.exports = {
      * 
      **/
     run: async (client, message, args, args1) => {
-        const mainEmbed = await createAuthorEmbed("Reaction Roles!", process.env.MAIN_EMBED_COLOUR, client.user)
-
         await message.channel.send({
             embeds: [await createAuthorEmbed("Please type the channel for the message to be created in!", process.env.MAIN_EMBED_COLOUR, message.author)]
         })
@@ -56,14 +59,19 @@ module.exports = {
             channelId = _channel
         }
 
+        if (!channelId) {
+            return message.channel.send({
+                embeds: [await createAuthorEmbed("Invalid channel!", process.env.MAIN_EMBED_COLOUR, message.author)]
+            })
+        }
+
         const channel = await message.guild.channels.fetch(channelId)
 
-        const startMessage = await message.channel.send({
-            embeds: [await createAuthorEmbed(`The channel <#${channel.id}> will now be used!\nPlease type a role followed by the reaction emoji!`, process.env.MAIN_EMBED_COLOUR, message.author)]
+        await message.channel.send({
+            embeds: [await createAuthorEmbed(`The channel <#${channel.id}> will now be used!\nPlease type a role followed by the reaction emoji! When finished, please send "done"`, process.env.MAIN_EMBED_COLOUR, message.author)]
         })
 
         var roles = []
-        var emojis = []
 
         var done = false;
         while (!done) {
@@ -83,17 +91,63 @@ module.exports = {
                 return message.channel.send("An error occured!")
             })
 
-            if (_message === "done") {
+            if (_message.toLowerCase() === "done") {
                 done = true
                 break
             }
 
-            const role = _message.split(" ")[0]
-            roles.push(role.substring(3, role.length - 1))
-            emojis.push(_message.split(" ")[1])
-        }
-        console.log(roles, emojis)
+            const roleID = _message.split(" ")[0].substring(3, _message.split(" ")[0].length - 1)
 
-        
+            roles.push({
+                roleID: roleID,
+                emoji: _message.split(" ")[1]
+            })
+        }
+
+        var embedBody = "Reaction roles!\n"
+
+        for (const role of roles) {
+            embedBody += `React with ${role.emoji} to get <@&${role.roleID}>\n`
+        }
+
+        const config = JSON.parse(readFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json'))
+
+        const embed = await createBasicEmbed(embedBody, process.env.MAIN_EMBED_COLOUR)
+
+        const currentMessageID = config.currentMessageID
+
+        embed.setFooter({
+            text: `Message ID: ${currentMessageID}`
+        })
+
+        config.currentMessageID += 1
+
+        const messageEmbed = await channel.send({
+            embeds: [embed]
+        })
+
+        if (config[messageEmbed.id]) {
+            throw new Error("Message already exists!")
+        }
+
+        config[messageEmbed.id] = {
+            roles: roles,
+            channel: channel.id,
+            messageID: currentMessageID,
+            embedBody: embedBody,
+            channelID: channelId
+        }
+
+        writeFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json', JSON.stringify(config, null, 4))
+
+        for (const role of roles) {
+            await messageEmbed.react({
+                name: role.emoji
+            })
+        }
+
+        await message.channel.send({
+            embeds: [await createAuthorEmbed("Message created!", process.env.MAIN_EMBED_COLOUR, message.author)]
+        })
     }
 }

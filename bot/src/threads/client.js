@@ -3,6 +3,9 @@ const {
     Collection
 } = require('discord.js')
 const {
+    ReactionRoleManager
+} = require('discord.js-collector')
+const {
     argParse
 } = require('../handler/args')
 const {
@@ -35,7 +38,7 @@ const logger = {
         if (level == LogLevel.ERROR) {
             parentPort.postMessage({
                 type: 'error',
-                error: message
+                error:`${message.name}: ${message.message}`
             })
         } else {
             parentPort.postMessage({
@@ -73,6 +76,10 @@ const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 })
+
+client.logger = logger
+client.testers = testers
+client.arguments = arguments
 
 client.on("ready", async () => {
     logger.log(LogLevel.INFO, '-------------------------------------------')
@@ -168,6 +175,7 @@ client.on('messageCreate', async message => {
         try {
             const run = await command.run(client, message, args, args1)
             if (run instanceof Error) {
+                logger.log(LogLevel.ERROR, run)
                 return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
             }
         } catch (error) {
@@ -180,12 +188,10 @@ client.on('messageCreate', async message => {
 })
 
 async function start() {
-    client.logger = logger
-    client.testers = testers
-    client.arguments = arguments
     client.aliases = new Collection()
     client.commands = new Collection()
     client.categories = new Collection()
+
     const tasks = new Collection()
     
     const commands = require('../handler/command')(client, process.env.BOT_COMMANDS_FOLDER)
@@ -195,8 +201,9 @@ async function start() {
     logger.log(LogLevel.VERBOSE, _tasks.toString())
     
     tasks.forEach(async task => {
+        console.log(task, client.arguments.development)
         if (task.development) {
-            if (!arguments.development) return
+            if (!client.arguments.development) return
         }
         await task.init(client)
     })

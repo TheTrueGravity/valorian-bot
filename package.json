@@ -8,6 +8,7 @@
     "argparse": "^2.0.1",
     "ascii-table": "^0.0.9",
     "discord.js": "^13.6.0",
+    "discord.js-collector": "^1.8.9",
     "dotenv": "^16.0.0",
     "mime-db": "^1.52.0",
     "node": "^17.4.0",

@@ -102,7 +102,7 @@ export default class Logger implements ILogger {
         let msg: string
 
         const logLevel = this.getLogLevel(level)
-        const logMessage = (message instanceof Error ? message.message : message)
+        const logMessage = (message instanceof Error ? `${message.name}: ${message.message}` : message)
 
         if (logMessage.includes('\n')) {
             const logMessages = logMessage.split(/\n/)
