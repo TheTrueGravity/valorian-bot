@@ -17,6 +17,8 @@ module.exports = {
 
         const msg = args1.replace(args[0], '').trimStart()
 
+        var body = ''
+
         var embed = new MessageEmbed()
 
         try {
@@ -43,14 +45,19 @@ module.exports = {
                 }
             }
         } catch {
+            if (msg.includes('@everyone') || msg.includes('@here')) {
+                body = msg.includes('@everyone') ? '@everyone' : '@here'
+                msg.replace(body, '')
+            }
             embed = new MessageEmbed({
-                description: msg
+                description: msg,
+                color: process.env.MAIN_EMBED_COLOUR
             })
         }
 
         const channel = await message.guild.channels.fetch(channelId)
 
-        await channel.send({
+        await channel.send(body, {
             embeds: [embed]
         })
     }

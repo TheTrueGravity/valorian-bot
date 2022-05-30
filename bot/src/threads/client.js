@@ -6,7 +6,7 @@ const {
     argParse
 } = require('../handler/args')
 const {
-    parentPort
+    parentPort, isMainThread
 } = require('worker_threads')
 const {
     reply,
@@ -15,6 +15,10 @@ const {
 const {
     LogLevel
 } = require('../handler/logger')
+
+if (isMainThread) {
+    throw new Error('This file is meant to be run in a worker thread!')
+}
 
 parentPort.on('message', async message => {
     if (message.type == "ping") {
@@ -109,23 +113,6 @@ client.getPrefixes = async function () {
     return prefixes
 }
 
-client.on('messageReactionAdd', async (reaction, user) => {
-    console.log(reaction.message)
-    parentPort.postMessage({
-        type: 'messageReactionAdd',
-        reaction: reaction.toJSON(),
-        user: user.toJSON()
-    })
-})
-client.on('messageReactionRemove', async (reaction, user) => {
-    console.log(reaction.message)
-    parentPort.postMessage({
-        type: 'messageReactionRemove',
-        reaction: reaction.toJSON(),
-        user: user.toJSON()
-    })
-})
-
 client.on('messageCreate', async message => {
     var hasPrefix = false;
     var prefix = ''
@@ -199,10 +186,19 @@ async function start() {
     client.aliases = new Collection()
     client.commands = new Collection()
     client.categories = new Collection()
-
-    commands = require('../handler/command')(client, process.env.BOT_COMMANDS_FOLDER)
+    const tasks = new Collection()
+    
+    const commands = require('../handler/command')(client, process.env.BOT_COMMANDS_FOLDER)
+    const _tasks = require('../handler/tasks')(tasks, process.env.BOT_TASKS_FOLDER)
 
     logger.log(LogLevel.VERBOSE, commands.toString())
+    logger.log(LogLevel.VERBOSE, _tasks.toString())
+    
+    tasks.forEach(async task => {
+        await task.init(client)
+    })
+
+    console.log(tasks)
 
     logger.log(LogLevel.INFO, 'Client logging in...')
     client.login(process.env.TOKEN)
