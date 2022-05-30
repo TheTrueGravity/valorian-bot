@@ -50,6 +50,9 @@ module.exports = {
                             if (command.aliases) {
                                 description += `\n**Aliases** - ${command.aliases.join(', ').substr(0, command.aliases.join(', ').length)}`
                             }
+                            if (command.args) {
+                                description += `\n**Arguments** - ${command.args.join(' ')}`
+                            }
                             description += '\n\n'
                         }
 
@@ -75,6 +78,9 @@ module.exports = {
                             `**Name:** ${(await command).name}\n**Description**: ${command.description}\n**Category**: ${command.category}`
                         if (command.aliases) {
                             description += `\n**Aliases** - ${command.aliases}`
+                        }
+                        if (command.args) {
+                            description += `\n**Arguments** - ${command.args.join(' ')}`
                         }
                         description += '\n\n'
 
