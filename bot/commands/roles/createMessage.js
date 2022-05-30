@@ -67,7 +67,7 @@ module.exports = {
         const channel = await message.guild.channels.fetch(channelId)
 
         await message.channel.send({
-            embeds: [await createAuthorEmbed(`The channel <#${channel.id}> will now be used!\nPlease type a role followed by the reaction emoji! When finished, please send "done"`, process.env.MAIN_EMBED_COLOUR, message.author)]
+            embeds: [await createAuthorEmbed(`The channel <#${channel.id}> will now be used!\nFor each role, please type the role followed by an emoji, in seperate messages!\nWhen finished, please send "done"`, process.env.MAIN_EMBED_COLOUR, message.author)]
         })
 
         var roles = []
