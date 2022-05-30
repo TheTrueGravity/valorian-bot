@@ -161,7 +161,7 @@ client.on('messageCreate', async message => {
                 }
             }
         }
-        
+
         if (command.devOnly) {
             if (!testers.includes(message.author.id)) return
         }
@@ -200,7 +200,6 @@ async function start() {
     logger.log(LogLevel.VERBOSE, _tasks.toString())
     
     tasks.forEach(async task => {
-        console.log(task, client.arguments.development)
         if (task.development) {
             if (!client.arguments.development) return
         }
