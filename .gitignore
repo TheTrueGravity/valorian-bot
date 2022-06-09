@@ -1,6 +1,7 @@
 node_modules
 .env
 push.bat
+push.sh
 logs
 tsconfig.json
 __null
