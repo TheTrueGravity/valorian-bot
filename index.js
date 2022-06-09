@@ -16,10 +16,25 @@ const {
     LogLevel
 } = require('./handler/logger')
 const {
-    writeFileSync
+    writeFileSync, readdirSync
 } = require('fs')
+const os = require('os')
 
 require('dotenv').config()
+
+const platform = os.platform()
+
+console.log(platform.toUpperCase())
+
+const envKeys = Object.keys(process.env)
+
+for (let i = 0; i < envKeys.length; i++) {
+    if (envKeys[i].includes(platform.toUpperCase())) {
+        process.env[envKeys[i].replace(platform.toUpperCase()+'.', '')] = process.env[envKeys[i]]
+    }
+}
+
+console.log(readdirSync(process.env.BOT_COMMANDS_FOLDER))
 
 const arguments = argParse("", [{
         name: '--development',
@@ -55,7 +70,7 @@ async function createClientWorker() {
     var recievedResponse = false
     logger.log(LogLevel.INFO, 'Creating client worker...')
 
-    const clientWorker = new Worker('./bot/src/threads/client.js', {
+    const clientWorker = new Worker('./valorianBot/src/client.js', {
         argv: process.argv.slice(2, process.argv.length)
     })
 

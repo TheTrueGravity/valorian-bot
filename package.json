@@ -2,7 +2,7 @@
   "name": "valorian",
   "version": "0.1.0",
   "description": "",
-  "main": "src\\index.js",
+  "main": "index.js",
   "dependencies": {
     "@types/node": "^17.0.25",
     "argparse": "^2.0.1",
@@ -11,15 +11,24 @@
     "discord.js-collector": "^1.8.9",
     "dotenv": "^16.0.0",
     "mime-db": "^1.52.0",
-    "node": "^17.4.0",
+    "node": "^17.7.2",
+    "run-script-os": "^1.1.6",
     "util": "^0.12.4"
   },
   "scripts": {
     "build": "tsc",
-    "test": "npm run build && node bot\\src\\index.js --development",
-    "beta": "npm run build && node bot\\src\\index.js --beta",
-    "start": "npm run build && node bot\\src\\index.js",
-    "deploy": "npm run build && git add * & git commit -m \"main\" & git push -u origin main"
+    "test": "run-script-os",
+    "beta": "run-script-os",
+    "start": "run-script-os",
+    "deploy": "run-script-os",
+    "test:darwin:linux": "npm run build; node index.js --development",
+    "beta:darwin:linux": "npm run build; node index.js --beta",
+    "start:darwin:linux": "npm run build; node index.js",
+    "deploy:darwin:linux": "npm run build;git add * & git commit -m \"main\" & git push -u origin main",
+    "test:win32": "npm run build && node index.js --development",
+    "beta:win32": "npm run build && node index.js --beta",
+    "start:win32": "npm run build && node index.js",
+    "deploy:win32": "npm run build && git add * & git commit -m \"main\" & git push -u origin main"
   },
   "repository": {
     "type": "git",

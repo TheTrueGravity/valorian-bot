@@ -13,7 +13,7 @@ module.exports = (client, commandsFolder) => {
 
         for (let file of commands) {
             let pull = require(`${commandsFolder}/${dir}/${file.split('.')[0]}`)
-
+            
             if (file == '_category.js') {
                 categories.push(pull)
                 continue

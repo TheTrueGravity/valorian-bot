@@ -20,10 +20,10 @@ const {
 } = require('./handler/logger')
 
 if (isMainThread) {
-    throw new Error('This file is meant to be run in a worker thread!')
+    // throw new Error('This file is meant to be run in a worker thread!')
 }
 
-parentPort.on('message', async message => {
+parentPort?.on('message', async message => {
     if (message.type == "ping") {
         parentPort.postMessage({
             type: "pong"
@@ -68,9 +68,9 @@ const arguments = argParse("", [{
     }
 ])
 
-const testers = process.env.TESTERS.split(' ')
-const prefixes = process.env.PREFIXES.split(' ')
-const bot_channels = process.env.BOT_CHANNELS.split(' ')
+// const testers = process.env.TESTERS.split(' ')
+// const prefixes = process.env.PREFIXES.split(' ')
+// const bot_channels = process.env.BOT_CHANNELS.split(' ')
 
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'],
@@ -78,7 +78,7 @@ const client = new Client({
 })
 
 client.logger = logger
-client.testers = testers
+// client.testers = testers
 client.arguments = arguments
 
 client.on("ready", async () => {
@@ -185,6 +185,20 @@ client.on('messageCreate', async message => {
         logger.log(LogLevel.VERBOSE, `${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
     } else return
 })
+
+require('dotenv').config()
+
+const platform = require('os').platform()
+
+const envKeys = Object.keys(process.env)
+
+for (let i = 0; i < envKeys.length; i++) {
+    if (envKeys[i].includes(platform.toUpperCase())) {
+        process.env[envKeys[i].replace(platform.toUpperCase()+'.', '')] = process.env[envKeys[i]]
+    }
+}
+
+start()
 
 async function start() {
     client.aliases = new Collection()
