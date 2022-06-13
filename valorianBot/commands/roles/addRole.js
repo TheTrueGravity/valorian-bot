@@ -34,7 +34,7 @@ module.exports = {
             const role = parseRole(message.guild, args[1])
             if (!role) return await reply(message, await createErrorEmbed('Invalid role!', message.author))
 
-            const config = await read(process.env.BOT_CONFIG_DIR + '/reactionRoles.json')
+            const config = await read(process.env.VALORIAN_BOT_CONFIG_DIR + '/reactionRoles.json')
 
             if (parseInt(args[0]) >= config.currentMessageID) throw new Error('Invalid message ID!')
 
@@ -51,7 +51,7 @@ module.exports = {
 
                     var embedBody = config[r].embedBody += `\nReact with ${args[2]} to get <@&${role.id}>`
 
-                    const embed = await createBasicEmbed(embedBody, process.env.MAIN_EMBED_COLOUR)
+                    const embed = await createBasicEmbed(embedBody, process.env.VALORIAN_MAIN_EMBED_COLOUR)
 
                     embed.setFooter({
                         text: `Message ID: ${config[r].messageID}`
@@ -63,8 +63,8 @@ module.exports = {
 
                     await msg.react(args[2])
 
-                    write(process.env.BOT_CONFIG_DIR + '/reactionRoles.json', config)
-                    return await reply(message, await createBasicEmbed(`Added ${role.name} to the reaction roles!`, process.env.MAIN_EMBED_COLOUR))
+                    write(process.env.VALORIAN_BOT_CONFIG_DIR + '/reactionRoles.json', config)
+                    return await reply(message, await createBasicEmbed(`Added ${role.name} to the reaction roles!`, process.env.VALORIAN_MAIN_EMBED_COLOUR))
                 }
             }
         } catch (err) {

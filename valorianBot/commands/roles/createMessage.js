@@ -31,7 +31,7 @@ module.exports = {
      **/
     run: async (client, message, args, args1) => {
         await message.channel.send({
-            embeds: [await createAuthorEmbed("Please type the channel for the message to be created in!", process.env.MAIN_EMBED_COLOUR, message.author)]
+            embeds: [await createAuthorEmbed("Please type the channel for the message to be created in!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
         })
         var _channel = await message.channel.awaitMessages({
             filter: m => m.author.id == message.author.id,
@@ -41,14 +41,14 @@ module.exports = {
         }).then(async collected => {
             if (collected.first().content.toLowerCase() === "cancel") {
                 return message.channel.send({
-                    embeds: [await createAuthorEmbed("Cancelled!", process.env.MAIN_EMBED_COLOUR, message.author)]
+                    embeds: [await createAuthorEmbed("Cancelled!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
                 })
             }
             return collected.first().content
         }).catch(() => {
             return message.channel.send("An error occured!")
             // return message.channel.send({
-            //     embeds: [await createAuthorEmbed("Timed out!", process.env.MAIN_EMBED_COLOUR, message.author)]
+            //     embeds: [await createAuthorEmbed("Timed out!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
             // })
         })
 
@@ -61,7 +61,7 @@ module.exports = {
 
         if (!channelId) {
             return message.channel.send({
-                embeds: [await createAuthorEmbed("Invalid channel!", process.env.MAIN_EMBED_COLOUR, message.author)]
+                embeds: [await createAuthorEmbed("Invalid channel!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
             })
         }
 
@@ -83,7 +83,7 @@ module.exports = {
             }).then(async collected => {
                 if (collected.first().content.toLowerCase() === "cancel") {
                     return message.channel.send({
-                        embeds: [await createAuthorEmbed("Cancelled!", process.env.MAIN_EMBED_COLOUR, message.author)]
+                        embeds: [await createAuthorEmbed("Cancelled!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
                     })
                 }
                 return collected.first().content
@@ -110,9 +110,9 @@ module.exports = {
             embedBody += `React with ${role.emoji} to get <@&${role.roleID}>\n`
         }
 
-        const config = JSON.parse(readFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json'))
+        const config = JSON.parse(readFileSync(process.env.VALORIAN_BOT_CONFIG_DIR + '/reactionRoles.json'))
 
-        const embed = await createBasicEmbed(embedBody, process.env.MAIN_EMBED_COLOUR)
+        const embed = await createBasicEmbed(embedBody, process.env.VALORIAN_MAIN_EMBED_COLOUR)
 
         const currentMessageID = config.currentMessageID
 
@@ -138,7 +138,7 @@ module.exports = {
             channelID: channelId
         }
 
-        writeFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json', JSON.stringify(config, null, 4))
+        writeFileSync(process.env.VALORIAN_BOT_CONFIG_DIR + '/reactionRoles.json', JSON.stringify(config, null, 4))
 
         for (const role of roles) {
             await messageEmbed.react({
@@ -147,7 +147,7 @@ module.exports = {
         }
 
         await message.channel.send({
-            embeds: [await createAuthorEmbed("Message created!", process.env.MAIN_EMBED_COLOUR, message.author)]
+            embeds: [await createAuthorEmbed("Message created!", process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author)]
         })
     }
 }

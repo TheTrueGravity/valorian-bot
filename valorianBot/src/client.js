@@ -17,23 +17,11 @@ const {
 } = require('./handler/embeds')
 const {
     LogLevel
-} = require('./handler/logger')
+} = require('../../handler/logger')
 
 if (isMainThread) {
     throw new Error('This file is meant to be run in a worker thread!')
 }
-
-parentPort?.on('message', async message => {
-    if (message.type == "ping") {
-        parentPort.postMessage({
-            type: "pong"
-        })
-    } else if (message.type == "init") {
-        await init()
-    } else if (message.type == "start") {
-        await start()
-    }
-})
 
 const logger = {
     log: function (level, message) {
@@ -52,24 +40,6 @@ const logger = {
     }
 }
 
-const arguments = argParse("", [{
-        name: '--development',
-        alias: '-d',
-        options: {
-            action: 'store_true',
-            help: 'Enable development mode'
-        },
-    },
-    {
-        name: '--beta',
-        alias: '-b',
-        options: {
-            action: 'store_true',
-            help: 'Enable beta mode'
-        }
-    }
-])
-
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION']
@@ -86,6 +56,11 @@ client.on("ready", async () => {
     client.user.setActivity(`${prefixes[0]}help`, {
         type: 'LISTENING'
     })
+
+    parentPort.postMessage({
+        type: 'start',
+        success: true
+    })
 })
 
 client.on("error", (err) => {
@@ -96,19 +71,10 @@ client.isMod = async function (message) {
     return (message.guild.ownerId == message.author.id || message.author.id == "487314847470714907")
 }
 client.getVersion = async function () {
-    const {
-        version
-    } = require('../../package.json')
-    return version
+    return process.env.VERSION
 }
 client.getDeployment = async function (arguments) {
-    var deployment = "production"
-    if (arguments.development) {
-        deployment = "development"
-    } else if (arguments.beta) {
-        deployment = "beta"
-    }
-    return deployment
+    return process.env.DEPLOYMENT
 }
 client.getPrefixes = async function () {
     return prefixes
@@ -182,7 +148,6 @@ client.on('messageCreate', async message => {
 
 const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
-const bot_channels = process.env.BOT_CHANNELS.split(' ')
 
 async function init() {
     client.logger = logger
@@ -221,9 +186,7 @@ async function start() {
     logger.log(LogLevel.VERBOSE, _tasks.toString())
     
     tasks.forEach(async task => {
-        if (task.development) {
-            if (!client.arguments.development) return
-        }
+        if (task.development && !client.arguments.development) return
         await task.init(client)
     })
 
@@ -231,3 +194,15 @@ async function start() {
     client.login(process.env.TOKEN)
     logger.log(LogLevel.INFO, 'Client logged in!')
 }
+
+parentPort?.on('message', async message => {
+    if (message.type == "ping") {
+        parentPort.postMessage({
+            type: "pong"
+        })
+    } else if (message.type == "init") {
+        await init()
+    } else if (message.type == "start") {
+        await start()
+    }
+})

@@ -31,6 +31,6 @@ module.exports = {
     run: async (client, message, args, args1) => {
         const prefixes = await client.getPrefixes()
 
-        await reply(message, await createAuthorEmbed(`The prefixes for this server are: ${prefixes.join(' ')}`, process.env.MAIN_EMBED_COLOUR, message.author))
+        await reply(message, await createAuthorEmbed(`The prefixes for this server are: ${prefixes.join(' ')}`, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
     }
 }

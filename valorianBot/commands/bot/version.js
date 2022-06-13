@@ -32,6 +32,6 @@ module.exports = {
      * 
      **/
     run: async (client, message, args, args1) => {
-        await reply(message, await createAuthorEmbed(`The bots version is ${await client.getVersion()}`, process.env.MAIN_EMBED_COLOUR, message.author))
+        await reply(message, await createAuthorEmbed(`The bots version is ${await client.getVersion()}`, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
     }
 }

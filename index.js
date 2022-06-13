@@ -1,22 +1,15 @@
 const {
-    argParse
-} = require('./handler/args')
-// const {
-//     default: WorkerHandler
-// } = require('./workers/workerHandler')
-// const {
-//     default: WorkerThread
-// } = require('./workers/workerThread')
-const {
-    isMainThread,
-    Worker
+    isMainThread
 } = require('worker_threads')
+const {
+    default: createWorker
+} = require('./handler/createWorker')
 const {
     default: Logger,
     LogLevel
 } = require('./handler/logger')
 const {
-    writeFileSync, readdirSync
+    readdirSync
 } = require('fs')
 const os = require('os')
 
@@ -26,33 +19,61 @@ const platform = os.platform()
 
 console.log(platform.toUpperCase())
 
-const envKeys = Object.keys(process.env)
+var envKeys = Object.keys(process.env)
+
+const modules = {}
+
+const PARSED_VARS = {}
 
 for (let i = 0; i < envKeys.length; i++) {
     if (envKeys[i].includes(platform.toUpperCase())) {
-        process.env[envKeys[i].replace(platform.toUpperCase()+'.', '')] = process.env[envKeys[i]]
+        process.env[envKeys[i].replace(platform.toUpperCase() + '.', '')] = process.env[envKeys[i]]
     }
 }
 
-console.log(readdirSync(process.env.BOT_COMMANDS_FOLDER))
-
-const arguments = argParse("", [{
-        name: '--development',
-        alias: '-d',
-        options: {
-            action: 'store_true',
-            help: 'Enable development mode'
-        },
-    },
-    {
-        name: '--beta',
-        alias: '-b',
-        options: {
-            action: 'store_true',
-            help: 'Enable beta mode'
-        }
+for (const key in envKeys) {
+    if (envKeys[key].includes("WIN32") || envKeys[key].includes("LINUX") || envKeys[key].includes("MACOS")) {
+        delete process.env[envKeys[key]]
     }
-])
+}
+
+envKeys = Object.keys(process.env)
+
+for (let i = 0; i < envKeys.length; i++) {
+    if (envKeys[i].includes('.')) {
+        const VARS = envKeys[i].split('.')
+
+        if (VARS[0] === 'MODULES') {
+            if (!modules[VARS[1]]) {
+                modules[VARS[1]] = {}
+            }
+
+            var isBool = false
+            let bool
+
+            if (process.env[envKeys[i]] == "true" || process.env[envKeys[i]] == "false") {
+                isBool = true
+                bool = process.env[envKeys[i]] == "true"
+            }
+
+            modules[VARS[1]][VARS[2]] = isBool ? bool : process.env[envKeys[i]]
+
+            delete process.env[envKeys[i]]
+
+            continue
+        }
+        
+        if (!PARSED_VARS[VARS[0]]) {
+            PARSED_VARS[VARS[0]] = {}
+        }
+
+        PARSED_VARS[VARS[0]][VARS[1]] = process.env[envKeys[i]]
+
+        delete process.env[envKeys[i]]
+
+        continue
+    }
+}
 
 const loggerConfig = arguments.development ? {
     logToFile: false
@@ -63,68 +84,19 @@ const logger = new Logger(loggerConfig)
 
 logger.log(LogLevel.DEBUG, "Logger initialized!")
 
-// const workerHandlerConfig = require('../config/workerHandler.json')
-// const workerHandler = new WorkerHandler(workerHandlerConfig)
-
-async function createClientWorker() {
-    var recievedResponse = false
-    logger.log(LogLevel.INFO, 'Creating client worker...')
-
-    const clientWorker = new Worker('./valorianBot/src/client.js', {
-        argv: process.argv.slice(2, process.argv.length)
-    })
-
-    clientWorker.on('message', async message => {
-        if (message.type == 'error') {
-            logger.log(LogLevel.ERROR, `(Client Thread) ${message.error}`)
-        } else if (message.type == 'log') {
-            logger.log(message.level, `(Client Thread) ${message.message}`)
-        } else if (message.type == 'pong') {
-            recievedResponse = true
-        } else {
-            console.log(message)
-        }
-    })
-
-    clientWorker.on('online', () => {
-        logger.log(LogLevel.INFO, 'Client worker online!')
-    })
-
-    clientWorker.on('error', (err) => {
-        logger.log(LogLevel.ERROR, `(Client Thread) ${err}`)
-    })
-    
-    logger.log(LogLevel.INFO, 'Pinging client worker...')
-
-    clientWorker.postMessage({
-        type: 'ping'
-    })
-
-    while (!recievedResponse) {
-        await new Promise(resolve => setTimeout(resolve, 100))
-    }
-
-    logger.log(LogLevel.INFO, 'Recieved response from the client worker!')
-
-    clientWorker.postMessage({
-        type: 'init'
-    })
-    clientWorker.postMessage({
-        type: 'start'
-    })
-}
-
 async function run() {
     if (!isMainThread) {
         throw new Error('This script must be run in the main thread!')
     }
-    createClientWorker()
-}
 
-// process.on('SIGINT', function () {
-//     writeFileSync('./bot/config/workerHandler.json', JSON.stringify(workerHandler.toJSON()))
-//     process.exit(0)
-// })
+    for (const module in modules) {
+        const MODULE = modules[module]
+
+        if (!MODULE.ENABLED) continue
+
+        modules[module].WORKER = await createWorker(MODULE.WORKER_PATH, module, PARSED_VARS[module], logger)
+    }
+}
 
 if (isMainThread) {
     logger.log(LogLevel.DEBUG, "Main thread started!")

@@ -52,6 +52,6 @@ module.exports = {
                 value: await client.getDeployment(client.arguments)
             }
         ]
-        await reply(message, await createFieldsEmbed('Bot Info', process.env.MAIN_EMBED_COLOUR, message.author, fields))
+        await reply(message, await createFieldsEmbed('Bot Info', process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author, fields))
     }
 }

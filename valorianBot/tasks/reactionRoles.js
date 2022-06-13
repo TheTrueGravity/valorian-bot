@@ -3,7 +3,7 @@ const {
 } = require('discord.js')
 const {
     LogLevel
-} = require('../src/handler/logger')
+} = require('../../handler/logger')
 const { readFileSync } = require('fs')
 
 module.exports = {
