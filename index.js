@@ -15,7 +15,9 @@ const os = require('os')
 
 require('dotenv').config()
 
-const platform = os.platform()
+const server = process.env.SERVER == 'true' ? true : false
+
+const platform = server ? 'SERVER' : os.platform()
 
 console.log(platform.toUpperCase())
 
@@ -74,6 +76,8 @@ for (let i = 0; i < envKeys.length; i++) {
         continue
     }
 }
+
+console.log(process.env)
 
 const loggerConfig = arguments.development ? {
     logToFile: false
