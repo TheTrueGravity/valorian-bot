@@ -20,7 +20,7 @@ const {
 } = require('./handler/logger')
 
 if (isMainThread) {
-    // throw new Error('This file is meant to be run in a worker thread!')
+    throw new Error('This file is meant to be run in a worker thread!')
 }
 
 parentPort?.on('message', async message => {
@@ -29,6 +29,8 @@ parentPort?.on('message', async message => {
             type: "pong"
         })
     } else if (message.type == "init") {
+        await init()
+    } else if (message.type == "start") {
         await start()
     }
 })
@@ -68,18 +70,10 @@ const arguments = argParse("", [{
     }
 ])
 
-// const testers = process.env.TESTERS.split(' ')
-// const prefixes = process.env.PREFIXES.split(' ')
-// const bot_channels = process.env.BOT_CHANNELS.split(' ')
-
 const client = new Client({
     intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 })
-
-client.logger = logger
-// client.testers = testers
-client.arguments = arguments
 
 client.on("ready", async () => {
     logger.log(LogLevel.INFO, '-------------------------------------------')
@@ -186,25 +180,38 @@ client.on('messageCreate', async message => {
     } else return
 })
 
-require('dotenv').config()
+const testers = process.env.TESTERS.split(' ')
+const prefixes = process.env.PREFIXES.split(' ')
+const bot_channels = process.env.BOT_CHANNELS.split(' ')
 
-const platform = require('os').platform()
+async function init() {
+    client.logger = logger
+    client.testers = testers
+    client.arguments = arguments
 
-const envKeys = Object.keys(process.env)
-
-for (let i = 0; i < envKeys.length; i++) {
-    if (envKeys[i].includes(platform.toUpperCase())) {
-        process.env[envKeys[i].replace(platform.toUpperCase()+'.', '')] = process.env[envKeys[i]]
-    }
+    parentPort.postMessage({
+        type: 'init',
+        success: true
+    })
 }
 
-start()
-
 async function start() {
+    require('dotenv').config()
+
+    const platform = require('os').platform()
+
+    const envKeys = Object.keys(process.env)
+
+    for (let i = 0; i < envKeys.length; i++) {
+        if (envKeys[i].includes(platform.toUpperCase())) {
+            process.env[envKeys[i].replace(platform.toUpperCase()+'.', '')] = process.env[envKeys[i]]
+        }
+    }
+
     client.aliases = new Collection()
     client.commands = new Collection()
     client.categories = new Collection()
-
+    
     const tasks = new Collection()
     
     const commands = require('./handler/command')(client, process.env.BOT_COMMANDS_FOLDER)

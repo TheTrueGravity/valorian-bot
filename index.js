@@ -109,6 +109,9 @@ async function createClientWorker() {
     clientWorker.postMessage({
         type: 'init'
     })
+    clientWorker.postMessage({
+        type: 'start'
+    })
 }
 
 async function run() {
