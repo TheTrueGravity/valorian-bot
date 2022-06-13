@@ -77,8 +77,6 @@ for (let i = 0; i < envKeys.length; i++) {
     }
 }
 
-console.log(process.env)
-
 const loggerConfig = arguments.development ? {
     logToFile: false
 } : {
