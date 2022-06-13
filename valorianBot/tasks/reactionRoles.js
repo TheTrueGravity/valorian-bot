@@ -17,6 +17,8 @@ module.exports = {
         client.on('messageReactionAdd', async (reaction, user) => {
             if (user.bot) return
 
+            console.log(`${user.username} reacted with ${reaction.emoji.name}`)
+
             const config = JSON.parse(readFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json'))
 
             if (!config[reaction.message.id]) return
@@ -41,6 +43,8 @@ module.exports = {
         })
         client.on('messageReactionRemove', async (reaction, user) => {
             if (user.bot) return;
+
+            console.log(`${user.username} removed reaction ${reaction.emoji.name}`)
 
             const config = JSON.parse(readFileSync(process.env.BOT_CONFIG_DIR + '/reactionRoles.json'))
 

@@ -19,6 +19,7 @@ module.exports = {
     category: "roles",
     description: "Creates a reaction message!",
     args: "",
+    development: true,
     /**
      * Code to run when command is called
      * 

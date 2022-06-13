@@ -19,6 +19,7 @@ module.exports = {
     category: "roles",
     description: "Adds a role to the reaction list!",
     args: "{messageID} {Role name or id} {Reaction emoji}",
+    development: true,
     /**
      * Code to run when command is called
      * 
