@@ -28,7 +28,7 @@ module.exports = {
                 description += `${category.name} - ${category.description}\n\n`
             }
 
-            await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+            await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
         } else {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
@@ -56,7 +56,7 @@ module.exports = {
                             description += '\n\n'
                         }
 
-                        await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+                        await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
                     }
                 }
             } else {
@@ -84,7 +84,7 @@ module.exports = {
                         }
                         description += '\n\n'
 
-                        await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+                        await reply(message, await createTitleEmbed("Help", description, process.env.MAIN_EMBED_COLOUR, message.author))
                     }
                 }
             }
