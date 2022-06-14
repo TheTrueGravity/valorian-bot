@@ -2,6 +2,9 @@ const {
     isMainThread
 } = require('worker_threads')
 const {
+    argParse
+} = require('./handler/args')
+const {
     default: createWorker
 } = require('./handler/createWorker')
 const {
@@ -15,6 +18,24 @@ const os = require('os')
 
 require('dotenv').config()
 
+const arguments = argParse("", [{
+    name: '--development',
+    alias: '-d',
+    options: {
+        action: 'store_true',
+        help: 'Enable development mode'
+    },
+},
+{
+    name: '--beta',
+    alias: '-b',
+    options: {
+        action: 'store_true',
+        help: 'Enable beta mode'
+    }
+}
+])
+
 const server = process.env.SERVER == 'true' ? true : false
 
 const platform = server ? 'SERVER' : os.platform()
@@ -27,15 +48,15 @@ const modules = {}
 
 const PARSED_VARS = {}
 
-for (let i = 0; i < envKeys.length; i++) {
-    if (envKeys[i].includes(platform.toUpperCase())) {
-        process.env[envKeys[i].replace(platform.toUpperCase() + '.', '')] = process.env[envKeys[i]]
+for (const key of envKeys) {
+    if (key.includes(platform.toUpperCase())) {
+        process.env[key.replace(platform.toUpperCase() + '.', '')] = process.env[key]
     }
 }
 
-for (const key in envKeys) {
-    if (envKeys[key].includes("WIN32") || envKeys[key].includes("LINUX") || envKeys[key].includes("MACOS")) {
-        delete process.env[envKeys[key]]
+for (const key of envKeys) {
+    if (key.includes("WIN32") || key.includes("LINUX") || key.includes("MACOS") || key.includes("SERVER")) {
+        delete process.env[key]
     }
 }
 
@@ -77,6 +98,8 @@ for (let i = 0; i < envKeys.length; i++) {
     }
 }
 
+console.log(arguments)
+
 const loggerConfig = arguments.development ? {
     logToFile: false
 } : {
@@ -98,6 +121,8 @@ async function run() {
 
         modules[module].WORKER = await createWorker(MODULE.WORKER_PATH, module, PARSED_VARS[module], logger)
     }
+
+    console.log(PARSED_VARS.ORANGECORD)
 }
 
 if (isMainThread) {

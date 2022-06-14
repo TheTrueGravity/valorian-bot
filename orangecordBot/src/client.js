@@ -6,9 +6,6 @@ const {
     ReactionRoleManager
 } = require('discord.js-collector')
 const {
-    argParse
-} = require('./handler/args')
-const {
     parentPort, isMainThread
 } = require('worker_threads')
 const {
@@ -81,69 +78,7 @@ client.getPrefixes = async function () {
 }
 
 client.on('messageCreate', async message => {
-    var hasPrefix = false;
-    var prefix = ''
-
-    for (const _prefix of prefixes) {
-        if (message.content.toLowerCase().startsWith(_prefix)) {
-            hasPrefix = true;
-            prefix = message.content.slice(0, _prefix.length)
-        }
-    }
-
-    if (message.author.bot) return
-    if (!message.guild) return
-    if (!hasPrefix) return
-    if (message.guildId == "923637184332984350" && !bot_channels.includes(message.channel.id)) return
-
-    const args = message.content.slice(prefix).trim().replace(prefix, '').split(/ +/g)
-    const args1 = message.content.slice(prefix).trimStart().replace(prefix, '').replace(args[0], '').trimStart()
-
-    const cmd = args.shift().toLowerCase()
-
-    try {
-        var command = client.commands.get(cmd)
-    } catch {
-        return message.reply("Invalid command!")
-    }
-
-    if (!command) {
-        command = client.commands.get(client.aliases.get(cmd))
-    }
-
-    if (command) {
-        if (arguments.development) {
-            if (!testers.includes(message.author.id) && command.name != "deployment") return
-        } else {
-            for (var category of client.categories.get("categories")) {
-                if (category.name == command.category && category.mod) {
-                    if (!await client.isMod(message)) return
-                }
-            }
-        }
-
-        if (command.devOnly) {
-            if (!testers.includes(message.author.id)) return
-        }
-        if (!command.development) {
-            if (arguments.development) return
-        } else {
-            if (!arguments.development) return
-        }
-
-        try {
-            const run = await command.run(client, message, args, args1)
-            if (run instanceof Error) {
-                logger.log(LogLevel.ERROR, run)
-                return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
-            }
-        } catch (error) {
-            logger.log(LogLevel.ERROR, error)
-            return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
-        }
-
-        logger.log(LogLevel.VERBOSE, `${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)
-    } else return
+    
 })
 
 const testers = process.env.TESTERS.split(' ')
