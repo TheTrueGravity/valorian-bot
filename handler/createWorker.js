@@ -20,50 +20,50 @@ function createWorker(workerPath, workerName, workerConfig, LOGGER, workerOption
         var started = false;
         LOGGER.log(logger_1.LogLevel.INFO, `Creating worker ${workerName}`);
         const worker = new worker_threads_1.Worker(workerPath, Object.assign({ argv: process.argv.slice(2), env: Object.assign(Object.assign({}, workerConfig), process.env) }, workerOptions));
-        LOGGER.log(logger_1.LogLevel.INFO, `(${workerName}) Worker created`);
+        LOGGER.log(logger_1.LogLevel.INFO, `Worker created`, workerName);
         worker.on('message', (message) => {
             switch (message.type) {
                 case 'log':
-                    LOGGER.log(message.level, `(${workerName}) ${message.message}`);
+                    LOGGER.log(message.level, `${message.message}`, workerName);
                     break;
                 case 'error':
-                    LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) ${message.message}`);
+                    LOGGER.log(logger_1.LogLevel.ERROR, `${message.error}`, workerName);
                     break;
                 case 'pong':
                     recievedResponse = true;
                     break;
                 case 'init':
                     if (message.success) {
-                        LOGGER.log(logger_1.LogLevel.INFO, `(${workerName}) Worker initialized`);
+                        LOGGER.log(logger_1.LogLevel.INFO, `Worker initialized`, workerName);
                     }
                     else {
-                        LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) Worker initialization failed`);
+                        LOGGER.log(logger_1.LogLevel.ERROR, `Worker initialization failed`, workerName);
                     }
                     break;
                 case 'start':
                     if (message.success) {
-                        LOGGER.log(logger_1.LogLevel.INFO, `(${workerName}) Worker started`);
+                        LOGGER.log(logger_1.LogLevel.INFO, `Worker started`, workerName);
                         started = true;
                     }
                     else {
-                        LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) Worker start failed`);
+                        LOGGER.log(logger_1.LogLevel.ERROR, `Worker start failed`, workerName);
                     }
                     break;
                 default:
-                    LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) Unknown message type: ${message.type}`);
+                    LOGGER.log(logger_1.LogLevel.ERROR, `Unknown message type: ${message.type}`, workerName);
                     break;
             }
         });
         worker.on('error', (error) => {
-            LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) ${error.message}`);
+            LOGGER.log(logger_1.LogLevel.ERROR, error);
         });
         worker.on('exit', (code) => {
             if (code !== 0) {
-                LOGGER.log(logger_1.LogLevel.ERROR, `(${workerName}) Worker exited with code ${code}`);
+                LOGGER.log(logger_1.LogLevel.ERROR, `Worker exited with code ${code}`);
             }
         });
         worker.on('online', () => {
-            LOGGER.log(logger_1.LogLevel.INFO, `(${workerName}) Worker online`);
+            LOGGER.log(logger_1.LogLevel.INFO, `Worker online`);
         });
         worker.postMessage({
             type: 'ping'

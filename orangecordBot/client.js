@@ -3,22 +3,29 @@ const {
     Collection
 } = require('discord.js')
 const {
-    ReactionRoleManager
-} = require('discord.js-collector')
-const {
     parentPort, isMainThread
 } = require('worker_threads')
 const {
-    reply,
-    createErrorEmbed
-} = require('./handler/embeds')
+    TaskTypes
+} = require('./interfaces/ITask')
+const {
+    default: messageHandler
+} = require('./handlers/messageHandler')
 const {
     LogLevel
-} = require('../../handler/logger')
+} = require('../handler/logger')
+const {
+    ServerHandler
+} = require('./handlers/serverHandler')
+const {
+    Buffer
+} = require('./modules/buffer')
 
 if (isMainThread) {
     throw new Error('This file is meant to be run in a worker thread!')
 }
+
+const serverHandler = ServerHandler.getInstance()
 
 const logger = {
     log: function (level, message) {
@@ -77,9 +84,7 @@ client.getPrefixes = async function () {
     return prefixes
 }
 
-client.on('messageCreate', async message => {
-    
-})
+client.on('messageCreate', message => messageHandler(client, message, logger))
 
 const testers = process.env.TESTERS.split(' ')
 const prefixes = process.env.PREFIXES.split(' ')
@@ -114,20 +119,32 @@ async function start() {
     
     const tasks = new Collection()
     
-    const commands = require('./handler/command')(client, process.env.BOT_COMMANDS_FOLDER)
-    const _tasks = require('./handler/tasks')(tasks, process.env.BOT_TASKS_FOLDER)
+    const commands = await require('./modules/command')(client, process.env.BOT_COMMANDS_FOLDER)
+    const _tasks = await require('./modules/tasks')(tasks, process.env.BOT_TASKS_FOLDER)
 
     logger.log(LogLevel.VERBOSE, commands.toString())
     logger.log(LogLevel.VERBOSE, _tasks.toString())
     
     tasks.forEach(async task => {
         if (task.development && !client.arguments.development) return
-        await task.init(client)
+
+        if (task.enabled) {
+            if (task.init) await task.init(client)
+            switch (task.taskType) {
+                case TaskTypes.onClientEvent:
+                    client.on(task.name, (...args) => task.run(client, ...args))
+                    break
+                case TaskTypes.scheduled:
+                    client.setInterval(() => task.run(client), task.interval)
+                    break
+                default:
+                    break
+            }
+        }        
     })
 
     logger.log(LogLevel.INFO, 'Client logging in...')
     client.login(process.env.TOKEN)
-    logger.log(LogLevel.INFO, 'Client logged in!')
 }
 
 parentPort?.on('message', async message => {

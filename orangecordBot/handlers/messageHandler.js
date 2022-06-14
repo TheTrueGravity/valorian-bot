@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const logger_1 = require("../../../handler/logger");
-const embeds_1 = require("./embeds");
+const logger_1 = require("../../handler/logger");
+const embeds_1 = require("../modules/embeds");
 function handleMessage(client, message, Logger) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         var hasPrefix = false;
         var prefix = '';
-        for (const _prefix of client.getPrefixes()) {
+        for (const _prefix of yield client.getPrefixes()) {
             if (message.content.toLowerCase().startsWith(_prefix)) {
                 hasPrefix = true;
                 prefix = message.content.slice(0, _prefix.length);
@@ -28,6 +28,13 @@ function handleMessage(client, message, Logger) {
             return;
         if (!hasPrefix)
             return;
+        if (client.useSpecificChannels == true) {
+            for (const _channel of client.getChannels()) {
+                if (message.channel.id == _channel) {
+                    return;
+                }
+            }
+        }
         const args = message.content.slice(prefix.length).trim().replace(prefix, '').split(/ +/g);
         const args1 = message.content.slice(prefix.length).trimStart().replace(prefix, '').replace(args[0], '').trimStart();
         const cmd = (_a = args.shift()) === null || _a === void 0 ? void 0 : _a.toLowerCase();
@@ -69,13 +76,13 @@ function handleMessage(client, message, Logger) {
                 const run = yield command.run(client, message, args, args1);
                 if (run instanceof Error) {
                     Logger.log(logger_1.LogLevel.ERROR, run);
-                    return yield (0, embeds_1.reply)(message, yield (0, embeds_1.createErrorEmbed)(`There was an error running the command: ${command.name}`, message.author));
+                    return yield (0, embeds_1.reply)(message, yield (0, embeds_1.createErrorEmbed)(`There was an error running the command: ${command.name}`, message.author, process.env.BAD_ORANGE));
                 }
             }
             catch (e) {
                 let error = e;
                 Logger.log(logger_1.LogLevel.ERROR, error);
-                return yield (0, embeds_1.reply)(message, yield (0, embeds_1.createErrorEmbed)(`There was an error running the command: ${command.name}`, message.author));
+                return yield (0, embeds_1.reply)(message, yield (0, embeds_1.createErrorEmbed)(`There was an error running the command: ${command.name}`, message.author, process.env.BAD_ORANGE));
             }
             Logger.log(logger_1.LogLevel.VERBOSE, `${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`);
         }

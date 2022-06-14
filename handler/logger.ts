@@ -16,7 +16,7 @@ export enum LogLevel {
     VERBOSE = 4
 }
 export interface ILogger {
-    log(level: LogLevel, message: string | Error): void;
+    log(level: LogLevel, message: string | Error, lable?: string): void;
 }
 
 export function getDateAsString(forFileName: boolean = false): string {
@@ -36,8 +36,8 @@ export function getDateAsString(forFileName: boolean = false): string {
     }
 }
 
-function getMessageAsString(level: string, message: string): string {
-    return `[${getDateAsString()}] ${level} | ${message}\n`
+function getMessageAsString(level: string, message: string, lable: string | undefined): string {
+    return `[${getDateAsString()}] ${level}` + (lable ? ` [${lable}]` : "") + ` | ${message}\n`
 }
 
 export default class Logger implements ILogger {
@@ -98,22 +98,22 @@ export default class Logger implements ILogger {
         })
     }
 
-    public log(level: LogLevel, message: string | Error): void {
+    public log(level: LogLevel, message: string | Error, lable?: string): void {
         let msg: string
 
         const logLevel = this.getLogLevel(level)
-        const logMessage = (message instanceof Error ? `${message.name}: ${message.message}` : message)
+        const logMessage = (message instanceof Error ? (message.stack ? message.stack : `${message.name}: ${message.message}`) : message)
 
         if (logMessage.includes('\n')) {
             const logMessages = logMessage.split(/\n/)
             msg = "------------------------------------------------------\n"
-            msg += getMessageAsString(logLevel, "\n")
+            msg += getMessageAsString(logLevel, "\n", lable)
             for (let i = 0; i < logMessages.length; i++) {
                 msg += logMessages[i] + "\n"
             }
             msg += "------------------------------------------------------\n"
         } else {
-            msg = getMessageAsString(logLevel, logMessage)
+            msg = getMessageAsString(logLevel, logMessage, lable)
         }
 
         console.log(msg)

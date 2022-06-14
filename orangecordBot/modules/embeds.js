@@ -23,7 +23,7 @@ function createBasicEmbed(description, colour) {
 }
 exports.createBasicEmbed = createBasicEmbed;
 // Return an embed with a given title, description, colour and author.
-function createTitleEmbed(title, description, colour, author) {
+function createTitleEmbed(title, description, colour, author, thumbnail) {
     return __awaiter(this, void 0, void 0, function* () {
         const _author = author instanceof discord_js_1.User ? { name: author.username, iconURL: author.avatarURL() } : author;
         const embed = new discord_js_2.MessageEmbed()
@@ -31,6 +31,8 @@ function createTitleEmbed(title, description, colour, author) {
             .setDescription(description)
             .setColor(colour)
             .setAuthor(_author);
+        if (thumbnail)
+            embed.setThumbnail(thumbnail);
         return embed;
     });
 }
@@ -48,24 +50,28 @@ function createAuthorEmbed(description, colour, author) {
 }
 exports.createAuthorEmbed = createAuthorEmbed;
 // Return an embed with a given description, colour, and thumbnail.
-function createThumbnailEmbed(description, colour, thumbnail) {
+function createThumbnailEmbed(description, colour, thumbnail, author) {
     return __awaiter(this, void 0, void 0, function* () {
+        const _author = author instanceof discord_js_1.User ? { name: author.username, iconURL: author.avatarURL() } : author;
         const embed = new discord_js_2.MessageEmbed()
             .setDescription(description)
             .setColor(colour)
-            .setThumbnail(thumbnail);
+            .setThumbnail(thumbnail)
+            .setAuthor(_author);
         return embed;
     });
 }
 exports.createThumbnailEmbed = createThumbnailEmbed;
 // Return an error embed with a given description and author
-function createErrorEmbed(description, author) {
+function createErrorEmbed(description, author, thumbnail) {
     return __awaiter(this, void 0, void 0, function* () {
         const _author = author instanceof discord_js_1.User ? { name: author.username, iconURL: author.avatarURL() } : author;
         const embed = new discord_js_2.MessageEmbed()
             .setDescription(description)
             .setColor('#ff0000')
             .setAuthor(_author);
+        if (thumbnail)
+            embed.setThumbnail(thumbnail);
         return embed;
     });
 }

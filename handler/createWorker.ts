@@ -24,52 +24,52 @@ export default async function createWorker(workerPath: string | URL, workerName:
         ...workerOptions
     })
 
-    LOGGER.log(LogLevel.INFO, `(${workerName}) Worker created`)
+    LOGGER.log(LogLevel.INFO, `Worker created`, workerName)
 
     worker.on('message', (message) => {
         switch (message.type) {
             case 'log':
-                LOGGER.log(message.level, `(${workerName}) ${message.message}`)
+                LOGGER.log(message.level, `${message.message}`, workerName)
                 break
             case 'error':
-                LOGGER.log(LogLevel.ERROR, `(${workerName}) ${message.message}`)
+                LOGGER.log(LogLevel.ERROR, `${message.error}`, workerName)
                 break
             case 'pong':
                 recievedResponse = true
                 break
             case 'init':
                 if (message.success) {
-                    LOGGER.log(LogLevel.INFO, `(${workerName}) Worker initialized`)
+                    LOGGER.log(LogLevel.INFO, `Worker initialized`, workerName)
                 } else {
-                    LOGGER.log(LogLevel.ERROR, `(${workerName}) Worker initialization failed`)
+                    LOGGER.log(LogLevel.ERROR, `Worker initialization failed`, workerName)
                 }
                 break
             case 'start':
                 if (message.success) {
-                    LOGGER.log(LogLevel.INFO, `(${workerName}) Worker started`)
+                    LOGGER.log(LogLevel.INFO, `Worker started`, workerName)
                     started = true
                 } else {
-                    LOGGER.log(LogLevel.ERROR, `(${workerName}) Worker start failed`)
+                    LOGGER.log(LogLevel.ERROR, `Worker start failed`, workerName)
                 }
                 break
             default:
-                LOGGER.log(LogLevel.ERROR, `(${workerName}) Unknown message type: ${message.type}`)
+                LOGGER.log(LogLevel.ERROR, `Unknown message type: ${message.type}`, workerName)
                 break
         }
     })
 
     worker.on('error', (error) => {
-        LOGGER.log(LogLevel.ERROR, `(${workerName}) ${error.message}`)
+        LOGGER.log(LogLevel.ERROR, error)
     })
 
     worker.on('exit', (code: number) => {
         if (code !== 0) {
-            LOGGER.log(LogLevel.ERROR, `(${workerName}) Worker exited with code ${code}`)
+            LOGGER.log(LogLevel.ERROR, `Worker exited with code ${code}`)
         }
     })
 
     worker.on('online', () => {
-        LOGGER.log(LogLevel.INFO, `(${workerName}) Worker online`)
+        LOGGER.log(LogLevel.INFO, `Worker online`)
     })
 
     worker.postMessage({

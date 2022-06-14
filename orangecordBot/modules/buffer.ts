@@ -1,5 +1,5 @@
-export class Buffer {
-    private buffer: Array<any>
+export class Buffer<T> {
+    private buffer: Array<T>
 
     constructor() {
         this.buffer = []

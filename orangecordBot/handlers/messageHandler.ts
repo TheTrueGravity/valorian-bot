@@ -4,17 +4,17 @@ import {
 import {
     ILogger,
     LogLevel
-} from '../../../handler/logger'
+} from '../../handler/logger'
 import {
     createErrorEmbed,
     reply
-} from './embeds'
+} from '../modules/embeds'
 
 export default async function handleMessage (client: any, message: Message, Logger: ILogger) {
     var hasPrefix = false;
     var prefix = ''
 
-    for (const _prefix of client.getPrefixes()) {
+    for (const _prefix of await client.getPrefixes()) {
         if (message.content.toLowerCase().startsWith(_prefix)) {
             hasPrefix = true;
             prefix = message.content.slice(0, _prefix.length)
@@ -24,6 +24,13 @@ export default async function handleMessage (client: any, message: Message, Logg
     if (message.author.bot) return
     if (!message.guild) return
     if (!hasPrefix) return
+    if (client.useSpecificChannels == true) {
+        for (const _channel of client.getChannels()) {
+            if (message.channel.id == _channel) {
+                return
+            }
+        }
+    }
 
     const args = message.content.slice(prefix.length).trim().replace(prefix, '').split(/ +/g)
     const args1 = message.content.slice(prefix.length).trimStart().replace(prefix, '').replace(args[0], '').trimStart()
@@ -64,12 +71,20 @@ export default async function handleMessage (client: any, message: Message, Logg
             const run = await command.run(client, message, args, args1)
             if (run instanceof Error) {
                 Logger.log(LogLevel.ERROR, run)
-                return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
+                return await reply(message, await createErrorEmbed(
+                    `There was an error running the command: ${command.name}`,
+                    message.author,
+                    process.env.BAD_ORANGE
+                ))
             }
         } catch (e: any) {
             let error: Error = e
             Logger.log(LogLevel.ERROR, error)
-            return await reply(message, await createErrorEmbed(`There was an error running the command: ${command.name}`, message.author))
+            return await reply(message, await createErrorEmbed(
+                `There was an error running the command: ${command.name}`,
+                message.author,
+                process.env.BAD_ORANGE
+            ))
         }
 
         Logger.log(LogLevel.VERBOSE, `${message.author.username}#${message.author.discriminator} (${message.author.id}) successfully ran the command: ${command.name}`)

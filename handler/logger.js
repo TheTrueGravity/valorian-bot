@@ -27,8 +27,8 @@ function getDateAsString(forFileName = false) {
     }
 }
 exports.getDateAsString = getDateAsString;
-function getMessageAsString(level, message) {
-    return `[${getDateAsString()}] ${level} | ${message}\n`;
+function getMessageAsString(level, message, lable) {
+    return `[${getDateAsString()}] ${level}` + (lable ? ` [${lable}]` : "") + ` | ${message}\n`;
 }
 class Logger {
     constructor(config) {
@@ -72,21 +72,21 @@ class Logger {
             encoding: 'utf8'
         });
     }
-    log(level, message) {
+    log(level, message, lable) {
         let msg;
         const logLevel = this.getLogLevel(level);
-        const logMessage = (message instanceof Error ? `${message.name}: ${message.message}` : message);
+        const logMessage = (message instanceof Error ? (message.stack ? message.stack : `${message.name}: ${message.message}`) : message);
         if (logMessage.includes('\n')) {
             const logMessages = logMessage.split(/\n/);
             msg = "------------------------------------------------------\n";
-            msg += getMessageAsString(logLevel, "\n");
+            msg += getMessageAsString(logLevel, "\n", lable);
             for (let i = 0; i < logMessages.length; i++) {
                 msg += logMessages[i] + "\n";
             }
             msg += "------------------------------------------------------\n";
         }
         else {
-            msg = getMessageAsString(logLevel, logMessage);
+            msg = getMessageAsString(logLevel, logMessage, lable);
         }
         console.log(msg);
         if (this.logToFile)

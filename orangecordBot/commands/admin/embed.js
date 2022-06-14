@@ -52,7 +52,7 @@ module.exports = {
             }
             embed = new MessageEmbed({
                 description: msg,
-                color: process.env.VALORIAN_MAIN_EMBED_COLOUR
+                color: process.env.MAIN_EMBED_COLOUR
             })
         }
 

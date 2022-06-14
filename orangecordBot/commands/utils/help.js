@@ -3,7 +3,7 @@ const {
     createErrorEmbed,
     createAuthorEmbed,
     createTitleEmbed
-} = require('../../src/handler/embeds')
+} = require('../../modules/embeds')
 
 module.exports = {
     name: "help",
@@ -28,17 +28,35 @@ module.exports = {
                 description += `${category.name} - ${category.description}\n\n`
             }
 
-            await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+            await reply(message, await createTitleEmbed(
+                "Help",
+                description,
+                process.env.MAIN_EMBED_COLOUR,
+                message.author,
+                process.env.GOOD_ORANGE
+            ))
         } else {
             if (categories.map(x => x.name).find(e => e == args[0].toLowerCase())) {
                 for (var category of categories) {
                     if (category.name.toLowerCase() == args[0].toLowerCase()) {
                         if (category.mod && !(await client.isMod(message))) {
-                            return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'You do not have the required permissions!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         } else if (category.development && !client.arguments.development) {
-                            return await reply(message, await createErrorEmbed('That category is currently under development!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'That category is currently under development!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         } else if (category.development && !client.testers.includes(message.author.id)) {
-                            return await reply(message, await createErrorEmbed('That category is only for developers!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'That category is only for developers!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         }
 
                         var description = ''
@@ -56,7 +74,13 @@ module.exports = {
                             description += '\n\n'
                         }
 
-                        await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+                        await reply(message, await createTitleEmbed(
+                            "Help",
+                            description,
+                            process.env.MAIN_EMBED_COLOUR,
+                            message.author,
+                            process.env.BAD_ORANGE
+                        ))
                     }
                 }
             } else {
@@ -67,11 +91,23 @@ module.exports = {
                         const command = await client.commands.get(commands.find(e => e.name.toLowerCase() == args[0].toLowerCase()).name)
 
                         if (category.mod && !(await client.isMod(message))) {
-                            return await reply(message, await createErrorEmbed('You do not have the required permissions!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'You do not have the required permissions!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         } else if (command.development && !client.arguments.development) {
-                            return await reply(message, await createErrorEmbed('That command is currently under development!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'That command is currently under development!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         } else if (category.development && !client.testers.includes(message.author.id)) {
-                            return await reply(message, await createErrorEmbed('That command is only for developers!', message.author))
+                            return await reply(message, await createErrorEmbed(
+                                'That command is only for developers!',
+                                message.author,
+                                process.env.BAD_ORANGE
+                            ))
                         }
 
                         var description =
@@ -84,7 +120,13 @@ module.exports = {
                         }
                         description += '\n\n'
 
-                        await reply(message, await createTitleEmbed("Help", description, process.env.VALORIAN_MAIN_EMBED_COLOUR, message.author))
+                        await reply(message, await createTitleEmbed(
+                            "Help",
+                            description,
+                            process.env.MAIN_EMBED_COLOUR,
+                            message.author,
+                            process.env.BAD_ORANGE
+                        ))
                     }
                 }
             }

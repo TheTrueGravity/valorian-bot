@@ -40,7 +40,7 @@ const server = process.env.SERVER == 'true' ? true : false
 
 const platform = server ? 'SERVER' : os.platform()
 
-console.log(platform.toUpperCase())
+console.log(`Platform: ${platform}`)
 
 var envKeys = Object.keys(process.env)
 
@@ -98,8 +98,6 @@ for (let i = 0; i < envKeys.length; i++) {
     }
 }
 
-console.log(arguments)
-
 const loggerConfig = arguments.development ? {
     logToFile: false
 } : {
@@ -121,8 +119,6 @@ async function run() {
 
         modules[module].WORKER = await createWorker(MODULE.WORKER_PATH, module, PARSED_VARS[module], logger)
     }
-
-    console.log(PARSED_VARS.ORANGECORD)
 }
 
 if (isMainThread) {
