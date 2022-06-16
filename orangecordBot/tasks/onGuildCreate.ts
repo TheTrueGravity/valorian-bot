@@ -27,6 +27,7 @@ const Task: ITask = {
                 name: guild.name,
                 prefix: process.env.DEFAULT_PREFIX,
                 cooldown: 0,
+                cooldownTime: process.env.DEFAULT_COOLDOWN_TIME,
                 user_bumps: {},
                 roles: {}
             }

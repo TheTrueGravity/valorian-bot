@@ -86,21 +86,13 @@ class ServerHandler {
         }
         return ServerHandler.instance;
     }
-    bump(guild, user) {
+    bump(guild, user, time) {
         return __awaiter(this, void 0, void 0, function* () {
             this.bumped[guild.id] = true;
             this.writeBuffer.add({
                 type: "bump",
                 guild: guild.id,
-                user: user.id
-            });
-        });
-    }
-    setCooldown(guild, time) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.writeBuffer.add({
-                type: "setCooldown",
-                guild: guild.id,
+                user: user.id,
                 time: time
             });
         });

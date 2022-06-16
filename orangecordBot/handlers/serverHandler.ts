@@ -5,8 +5,7 @@ import {
 } from '../modules/buffer'
 
 export interface IServerHandler {
-    bump(guild: Guild, user: User): Promise<void>
-    setCooldown(guild: Guild, time: number): Promise<void>
+    bump(guild: Guild, user: User, time: number): Promise<void>
     changePrefix(guild: Guild, prefix: string): Promise<void>
     getPrefix(guild: Guild): Promise<string>
     getCooldown(guild: Guild): Promise<number>
@@ -76,19 +75,12 @@ export class ServerHandler implements IServerHandler {
         return ServerHandler.instance
     }
 
-    public async bump(guild: Guild, user: User): Promise<void> {
+    public async bump(guild: Guild, user: User, time: number): Promise<void> {
         this.bumped[guild.id] = true
         this.writeBuffer.add({
             type: "bump",
             guild: guild.id,
-            user: user.id
-        })
-    }
-
-    public async setCooldown(guild: Guild, time: number): Promise<void> {
-        this.writeBuffer.add({
-            type: "setCooldown",
-            guild: guild.id,
+            user: user.id,
             time: time
         })
     }
